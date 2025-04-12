@@ -4,7 +4,25 @@
 <title>Faulty Ram Decoder v0.3</title>
 <h2 style='color: red;'>Minerva (Sinclair QL) Faulty Ram Decoder v0.3</h2>
 <hr width="50%" color="red" align="left">
+
+<!-- Give some style to the table & inputs in order to visualize it better -->
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+tr:nth-child(odd) {background-color: #D6EEEE;}
+
+input[type=text] {text-transform: uppercase;}
+
+input[type=text]:focus {
+  background-color: lightblue;
+  text-transform: uppercase;
+}
+</style>
 </head>
+
 <body>
 
 <h3>Describe your system</h3>
@@ -17,10 +35,10 @@ Do you have an internal RAM expansion that expand it to?
 <input type="radio" id="640K" name="typeramexp" value="640"><label for="640K">640K</label>
 <h3>Introduce screen values</h3>
 
-<!-- Fields for datas obtenined -->
-WRITE DATA: <input type="text" name="write" maxlength="8" size="8"><br><br>
-READ DATA: &nbsp;&nbsp;<input type="text" name="read" maxlength="8" size="8"><br><br>
-ADDRESS: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="address" maxlength="8" size="8"><br><br>
+<!-- Fields for datas obtenined in a table format-->
+WRITE DATA: <input type="text" name="write" placeholder="548C4878" maxlength="8" size="8"><br><br>
+READ DATA: &nbsp;&nbsp;<input type="text" name="read" placeholder="5CCD5CCD" maxlength="8" size="8"><br><br>
+ADDRESS: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="address" placeholder="00032000" maxlength="8" size="8"><br><br>
 <input type="submit" name="submit" value="Submit">
 <input type='reset' value='Reset' name='reset'>
 <br>
@@ -72,10 +90,12 @@ else {echo "<h3 style='color: blue;'".">Result</h3>";}
 echo "- MINERVA OUTPUT SCREEN -<br>";
 echo "<hr width='20%'"." color='margenta'"." align='left'>";
 
-echo "Internal RAM : ".$typeramexp."K<br>"; 
-echo "WRITE &nbsp&nbsp&nbsp&nbsp&nbsp: ".strtoupper(dechex($write))."<br>";
-echo "READ &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp: ".strtoupper(dechex($read))."<br>";
-echo "ADDRESS : ".strtoupper(dechex($address))."<br>";
+echo "Internal RAM : ".$typeramexp."K<BR><BR>";
+echo '<table style="width:12%">';
+echo "<TR><TD>WRITE</TD><TD>".strtoupper(dechex($write))."</TD></TR>";
+echo "<TR><TD>READ</TD><TD>".strtoupper(dechex($read))."</TD></TR>";
+echo "<TR><TD>ADDRESS</TD><TD>".strtoupper(dechex($address))."</TD></TR>";
+echo "</table>";
 echo "<hr width='20%'"." color='margenta'"." align='left'>";
 
 echo "<br>";
