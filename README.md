@@ -18,6 +18,8 @@ This document in still under development same as the code getting more features.
 
 Not full tested yet, so use it under your own risk.
 
+![My image](images/GUI_1.png) 
+![My image](images/GUI_2.png) 
 
 Credits:
 The Original Program (ram3_ramfail.bas) was written for the SINCLAIR QL in SUPER BASIC language by Dominic Brown (1990).
