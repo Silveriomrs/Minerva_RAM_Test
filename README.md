@@ -44,9 +44,8 @@ The next was to determinate the 3 ceils and middle points, thanks that base didn
 + 512K => ceil at A0000H
 + 640K => ceil at C0000H
 
-> [!NOTE]
-> So the equation for the middle point that separate the two rows of RAM ICs on the board is:
- $MiddleAdrr=((ceil - floor) / 2) + floor$
+So the equation for the middle point that separate the two rows of RAM ICs on the board is:
+> $MiddleAdrr=((ceil - floor) / 2) + floor$
 
 To make it easier now the PHP page shows new fields that allows the user to select among 3 different types of Sinclair QL amount of RAM. The default one is 128K (*the most common*).
 
@@ -64,11 +63,11 @@ Also keep the reset buttom that clean the form.
 
 
 ### Section 2 Process
-Like now the results is headed by a label that indicate if it's an example to show how it works or the result of the real calc of 3 introduced codes. You can tell it by the proper word but also by the colour of the text.
+Now the results is headed by a label that indicate if it's an example to show how it works or the result of the real calc of 3 introduced codes. You can tell it by the proper word but also by the colour of the text.
 
 The interface shows which processed datas were introduced into a table, with coloured strips to give some extra confort to check out that codes corresponds with the expected.
 
-It is interesting when you want to check out that you introduced the codes without mistakes for checking purpose, saving time to introduce them twice, three times... just in case.
+It's interesting when you may want to check out the introduced the codes looking for mistakes, you'd save time to introduce them twice, three times... just in case.
 
 ### Section 3 Output
 The format of the ouput remain the same than the previous version. If it is simple and works, don't touch it. 
@@ -86,7 +85,7 @@ Not tested yet with mods of 640K (usually this mod has an extra IC in piggybag o
 
 
 > [!CAUTION]
-> Not fully tested yet with 640K mod, so use it under your own risk.
+> Not fully tested yet with 640K mod, so use it under your own risk. Remember the information is orientative and may not be determinant.
 
 
 ![Upper part of the GUI with the 2 first section](images/GUI_1.png) 
