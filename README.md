@@ -14,7 +14,7 @@ In 2015, 15 years later **Xad/Nightfall** ported the code to a **PHP** file givi
 The user must introduce the 3 codes them into the PHP mentioned tool at http://www.nightfallcrew.com/minervaram. Sadly it was only useful for a part of users that have a QL with stock RAM of 128K.
 
 ## Later distribuitor modifications
-When Sinclair started to sell the Sinclair QL (and till the end of its production) the amount of memory was 128KiB distribuited in the main PCB placed in 16 sockets of 8 Kbits each.
+When Sinclair started to sell the Sinclair QL (and till the end of its production) the amount of memory was 128KiB distribuited in the main PCB placed in 16 sockets of 64Kbits each.
 
 But some distribuitors use to make some **modification on the main board replacing the original TMS-4164 for MT-1257 of 256Kbits each increasing the total amount of RAM till 512KBytes**. That was the case of the <ins>Danish company H.Christensen&Søn as</ins>. 
 
@@ -37,6 +37,16 @@ Due to what mentioned aboved, here is a remake of the code that allows to other 
 
 ## Resolution
 Thanks to the code was pretty well smart&design it was easy to adapt. The main idea is that the memory still is distribuited by the sockets in a porportional way. Thus telling to the algorithm the limits of the RAM address, setting the floor and calculating the middle point (*16 ICs distribuited by 2 rows of 8 for upper and lower zone of the whole RAM amount*) now it should determinate and indicate the right IC, keeping the compatibility with the previous version but also with those Sinclair QLs with such modifications.
+
+The next was to determinate the 3 ceils and middle points, thanks that base didn't change the address (20000H):
+
++ 128K => ceil at 40000H (*default*) 
++ 512K => ceil at A0000H
++ 640K => ceil at C0000H
+
+> [!NOTE]
+> So the equation for the middle point that separate the two rows of RAM ICs on the board is:
+ $MiddleAdrr=((ceil - floor) / 2) + floor$
 
 To make it easier now the PHP page shows new fields that allows the user to select among 3 different types of Sinclair QL amount of RAM. The default one is 128K (*the most common*).
 
