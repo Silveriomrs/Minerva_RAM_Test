@@ -26,12 +26,12 @@ The modification relies in a extra glue logic added to the computer (*usually be
 
 Another **similar modification increased the amount of RAM up to 640KBytes using NECD41256C in piggy back on the original RAM** (*not pictures available yet*)
 
-In those cases, the excellent work done by Dominc & Xad/Nightfall was useless due to **the algorithm relies on a maximun of 128KBytes over the ROM zone, it means from 20000Hex to 30000Hex** (*Bellow 20000H is reserved to the ROM memory and some I/O areas*). So the maths were outside of the ranks beliving it was in a external RAM when actually it was placed in the main PCB sockets from IC1 to IC16.
+In those cases, the excellent work done by Dominc & Xad/Nightfall was helpless due to **the algorithm relies on a maximun of 128KBytes over the ROM zone, it means from 20000Hex to 30000Hex** (*Bellow 20000H is reserved to the ROM memory and some I/O areas*). So the maths were outside of the ranks beliving it was in a external RAM when actually it was placed in the main PCB sockets from IC1 to IC16.
+
+The algorithm detect it is over 30000H and stops the process abruptaly without giving a suspected IC.
 
 ## Motivation
 Due to what mentioned aboved, here is a remake of the code that allows to other users with modifications that expand the original memory placed on the ICs sockets/places till 512K (Danish mod) or 640K to get the right IC that is faulty.  
-
-As soon as the algorithm detect it is over 30000H stop with the process and doesn't give a suspected IC.
 
 >So why not to give a solution to this situation? Let's do it.<br> Would be it so difficult to adapt? Obviously not, I did it (*seems that*).
 
@@ -50,11 +50,11 @@ This area is dedicated to select the Sinclair QL model with the amount of RAM av
 Also keep the reset buttom that clean the form.
 
 > [!IMPORTANT]
-> In case of no datas introduced, when submited it shows an example of the ouput that would obtein in a real example. The send datas to the program are shown in light grey colour inside each text field.
+> In case of no datas introduced, when submited it shows an example of the output that would obtain in a real example. The send datas to the program are shown in light grey colour inside each text field.
 
 
 ### Section 2 Process
-Like now the results is headed by a label that indicate if it's an example to show how it works or a result of the real calc of the 3 valid codes. You can tell it by the proper word but also by the colour of the text.
+Like now the results is headed by a label that indicate if it's an example to show how it works or the result of the real calc of 3 introduced codes. You can tell it by the proper word but also by the colour of the text.
 
 The interface shows which processed datas were introduced into a table, with coloured strips to give some extra confort to check out that codes corresponds with the expected.
 
@@ -88,7 +88,8 @@ Here are some ideas that maybe I would attend.
 - [x] Adapt the code for modified Sinclair QLs with 512KB RAM
 - [X] Adapt the code for modified Sinclair QLs with 640KB RAM
 - [X] Improve the user interface for better understanding
-- [X] Add to the uer interface the controls to select the right QL
+- [X] Add to the user interface the controls to select the right QL
+- [ ] Add other suspect IC (multiplexers) based on the results
 - [ ] Create a Java APP to run to decode the codes without Internet
 - [ ] Create a C program for Sinclair QL instead a Basic one
 - [ ] Create an external ROM with the C code to test a QL without opening it.
