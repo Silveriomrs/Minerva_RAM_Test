@@ -64,7 +64,8 @@ It is interesting when you want to check out that you introduced the codes witho
 The format of the ouput remain the same than the previous version. If it is simple and works, don't touch it. 
 
 
-> [!CAUTION] The result may not correspond with a real faulty IC, it helps but it is not determinated since in the real hardware also are implied more ICs like the multiplexers, or pasive components. So it gives a starting point that in 90% of cases is the guilty component.
+> [!CAUTION]
+> The result may not correspond with a real faulty IC, it helps but it is not determinated since in the real hardware also are implied more ICs like the multiplexers, or pasive components. So it gives a starting point that in 90% of cases is the guilty component.
 
 ## Results
 **In few words Full Success.**
@@ -74,7 +75,8 @@ I has been tested with some original warning Minerva codes taken from faulties 1
 Not tested yet with mods of 640K (usually this mod has an extra IC in piggybag over original RAM ICs), but should work the same
 
 
-> [!CAUTION] Not fully tested yet with 640K mod, so use it under your own risk.
+> [!CAUTION]
+> Not fully tested yet with 640K mod, so use it under your own risk.
 
 
 ![Upper part of the GUI with the 2 first section](images/GUI_1.png) 
