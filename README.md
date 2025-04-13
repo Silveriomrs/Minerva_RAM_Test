@@ -49,7 +49,8 @@ This area is dedicated to select the Sinclair QL model with the amount of RAM av
 
 Also keep the reset buttom that clean the form.
 
-[!IMPORTANT]In case of no datas introduced, when submited it shows an example of the ouput that would obtein in a real example. The send datas to the program are shown in light grey colour inside each text field.
+> [!IMPORTANT]
+> In case of no datas introduced, when submited it shows an example of the ouput that would obtein in a real example. The send datas to the program are shown in light grey colour inside each text field.
 
 
 ### Section 2 Process
