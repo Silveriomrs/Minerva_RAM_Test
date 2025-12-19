@@ -60,19 +60,20 @@ public class Value {
 	}
 	
 	public String toString() {
+		//TODO: Clean commented old sentences.
 		String state ="Values\n";
 		String hexstr = "Hexadecimal value: ";
-		String decstr = "Decimal value: ";
+		//String decstr = "Decimal value: ";
 		StringBuilder hex = new StringBuilder();
 		
 		state += "Valid? : " + isValid() + "\n";
 		
 		for(int i = 0; i < 4 ; i++) {
 			hex.append(String.format("%02X ", hexList[i] & 0xFF));
-			decstr += decList[i] + " ";			
+			//decstr += decList[i] + " ";			
 		}
 		
-		state += hexstr + hex.toString() + "\n" + decstr + "\n";
+		state += hexstr + hex.toString() + "\n";
 		
 		return state;
 	}
