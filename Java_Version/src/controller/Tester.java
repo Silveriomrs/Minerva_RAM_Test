@@ -5,15 +5,16 @@ package controller;
 
 import model.TypeRamExpansion;
 import model.Value;
+import view.ShellMSG;
 
 /**
  * This engine is configured to works with INTs whose size is at least 32bits.
  */
 public class Tester {
-	public static final String RESET  = "\u001B[0m";
-    public static final String RED    = "\u001B[31m";
-    public static final String GREEN  = "\u001B[32m";
-    
+	
+	private ShellMSG shell = new ShellMSG();
+    private static final String VERSION = "0.9";
+	
 	final int BASE = 0x20000;							//Starting point for RAM after ROM area.
 	private int TOP, MIDDLE;
 	private Value write,read;
@@ -33,12 +34,17 @@ public class Tester {
 	 * @param a involved address.
 	 * @param t TypeRamExpansion defined in one of the option (128,512,640)
 	 */
-	public Tester(String w, String r, int a, TypeRamExpansion t) {
+	public Tester(String w, String r, String a, String t) {
 		setWrite(w);
 		setRead(r);
 		setAddress(a);
 		setTypeRAM(t);
 		calc();
+	}
+	
+	public void showResults() {
+		shell.showInputs(write, read, "" + this.typeramexp, binaryToStr());
+		shell.showFaultyICs(address, MIDDLE, binary, isOutInnerRAM());
 	}
 	
 	public void setWrite(String v) {
@@ -49,12 +55,12 @@ public class Tester {
 		this.read = new Value(v);
 	}
 	
-	public void setAddress(int a) {
-		this.address = a;
+	public void setAddress(String a) {
+		this.address = Integer.parseInt(a, 16);
 	}
 	
-	public void setTypeRAM(TypeRamExpansion t) {
-		this.typeramexp = t;
+	public void setTypeRAM(String t) {
+		this.typeramexp = TypeRamExpansion.valueOf(t);
 	}
 	
 	public void calc() {
@@ -86,36 +92,11 @@ public class Tester {
 		return orv;
 	}
 	
-	public String getBinaryStr() {
+	public String binaryToStr() {
 		String b = "";
 		for(int a : binary) { b += a; }
 		return b;
 	}
-	
-	public void showResults() {
-		System.out.println("Write " + write.toString());
-		System.out.println("Read " + read.toString());
-		
-		
-		System.out.println("System: " + typeramexp);
-		System.out.println("Binary result: " + getBinaryStr());
-		
-		if(isOutInnerRAM()) System.out.println(GREEN + "\nFaulty ram is in expansion memory\n" + RESET);
-		else showFaultyICs();
-		
-	}
-	
-	private void showFaultyICs() {
-		String ic = "IC";
-		// 8 ICs in high part of RAM or 8 ICs low part of RAM.
-		int n = (address >= MIDDLE)? 16:8;
-		//1 => BAD, 0 => GOOD
-		for(int i = 0; i < 8; i++) {
-			if(binary[i] == 1) System.out.println(ic + (n-i) + RED + " BAD" + RESET);
-			else System.out.println(ic + (n-i) + GREEN + " GOOD" + RESET);
-		}
-	}
-	
 	
 	private void setExample() {
 		this.write = new Value("548C4878");
@@ -153,14 +134,23 @@ public class Tester {
 	public static void main(String[] args) {
 		Tester tester = new Tester();
 
-		//Test For 512K Fault IC : IC8
-		tester.setRead("FFFFFFFF");
-		tester.setWrite("FF7FFF7F");
-		tester.setAddress(0x00050808);
-		tester.setTypeRAM(TypeRamExpansion.QL512);
+		if(args.length > 3) tester.setTypeRAM(args[4]);
+
 		//
-		tester.calc();
-		tester.showResults();
+		if(args.length == 3) {
+			tester.setRead(args[0]);
+			tester.setWrite(args[1]);
+			tester.setAddress(args[3]);
+			tester.setTypeRAM("QL128");
+			tester.calc();
+			tester.showResults();
+		} else {
+			System.out.println("Not enough parameters");
+		}
+		
+		
+		System.out.println("Args: " + args.length);
+		System.out.println(args[0]);
 	}
 
 }

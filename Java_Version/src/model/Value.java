@@ -30,7 +30,7 @@ public class Value {
 		return this.valid;
 	}
 	
-	public boolean setValue(String value) {		
+	private boolean setValue(String value) {		
 		//Check no null
 		boolean done = value != null;
 		//Remove spaces
@@ -61,19 +61,17 @@ public class Value {
 	
 	public String toString() {
 		//TODO: Clean commented old sentences.
-		String state ="Values\n";
-		String hexstr = "Hexadecimal value: ";
+		String state ="value: ";
 		//String decstr = "Decimal value: ";
 		StringBuilder hex = new StringBuilder();
-		
-		state += "Valid? : " + isValid() + "\n";
 		
 		for(int i = 0; i < 4 ; i++) {
 			hex.append(String.format("%02X ", hexList[i] & 0xFF));
 			//decstr += decList[i] + " ";			
 		}
 		
-		state += hexstr + hex.toString() + "\n";
+		state += hex.toString() + "\n";
+		state += "Valid? : " + (isValid()? "yes":"no") + "\n";
 		
 		return state;
 	}
