@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import controller.Tester;
-import model.TypeRamExpansion;
 
 class Tests_QL128 {
 

@@ -6,6 +6,7 @@ package controller;
 import model.TypeRamExpansion;
 import model.Value;
 import view.ShellMSG;
+import view.ErrCodes;
 
 /**
  * This engine is configured to works with INTs whose size is at least 32bits.
@@ -47,20 +48,57 @@ public class Tester {
 		shell.showFaultyICs(address, MIDDLE, binary, isOutInnerRAM());
 	}
 	
-	public void setWrite(String v) {
-		this.write = new Value(v);
+	private boolean isValidHEX(String h) {
+		//Create a Value object to accomplish requirements.
+		Value v = new Value(h); 
+		//Lets pass the value and return the result.
+		return v.isValid();
 	}
 	
-	public void setRead(String v) {
-		this.read = new Value(v);
+	public boolean setWrite(String v) {
+		boolean OK = isValidHEX(v);
+		if(OK) {
+			this.write = new Value(v);
+		} else {
+			shell.showErr(ErrCodes.WRONG_WRITE_VALUE,v);
+		}
+	
+		return OK;
 	}
 	
-	public void setAddress(String a) {
-		this.address = Integer.parseInt(a, 16);
+	public boolean setRead(String v) {
+		boolean OK = isValidHEX(v);
+		if(OK) {
+			this.read = new Value(v);
+		} else {
+			shell.showErr(ErrCodes.WRONG_READ_VALUE,v);
+		}
+		
+		return OK;
 	}
 	
-	public void setTypeRAM(String t) {
-		this.typeramexp = TypeRamExpansion.valueOf(t);
+	public boolean setAddress(String v) {
+		boolean OK = isValidHEX(v);
+		
+		if(OK) {
+			this.address = Integer.parseInt(v, 16);
+		} else {
+			shell.showErr(ErrCodes.WRONG_ADDRESS_VALUE,v);
+		}
+		
+		return OK;
+	}
+	
+	public boolean setTypeRAM(String v) {
+		boolean OK = TypeRamExpansion.contains(v);
+	    
+		if(OK) {
+			this.typeramexp = TypeRamExpansion.valueOf(v);
+		} else {
+			shell.showErr(ErrCodes.WRONG_QLRAM_VALUE,v);
+		}
+		
+		return OK;
 	}
 	
 	public void calc() {
@@ -133,24 +171,34 @@ public class Tester {
 	 */
 	public static void main(String[] args) {
 		Tester tester = new Tester();
-
-		if(args.length > 3) tester.setTypeRAM(args[4]);
-
-		//
-		if(args.length == 3) {
-			tester.setRead(args[0]);
-			tester.setWrite(args[1]);
-			tester.setAddress(args[3]);
-			tester.setTypeRAM("QL128");
-			tester.calc();
-			tester.showResults();
-		} else {
-			System.out.println("Not enough parameters");
+		int a = args.length;
+		boolean ok = true;
+		
+		switch(a) {
+		case 1: //For optional switch.
+			tester.shell.showHelp(args[0]);
+			break;
+		case 2: //not enough parameters
+			tester.shell.showErr(ErrCodes.NOT_ENOUGH_PARAMS,"");
+			break;
+		case 3:
+			ok = tester.setTypeRAM("QL128") && ok;
+		case 4:
+			ok = tester.setRead(args[0]) && ok;
+			ok = tester.setWrite(args[1]) && ok;
+			ok = tester.setAddress(args[2]) && ok;
+			if(a == 4) ok = tester.setTypeRAM(args[4]) && ok;
+			if(ok) {
+				tester.calc();
+				tester.showResults();
+			}
+			break;
+			default:
+				tester.shell.showAbout();
+				tester.shell.showSyntax();
+				tester.shell.showCredits();
 		}
 		
-		
-		System.out.println("Args: " + args.length);
-		System.out.println(args[0]);
 	}
 
 }
