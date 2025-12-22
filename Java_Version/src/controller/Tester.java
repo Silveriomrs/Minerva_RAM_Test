@@ -3,10 +3,10 @@
  */
 package controller;
 
+import model.ErrCodes;
 import model.TypeRamExpansion;
 import model.Value;
 import view.ShellMSG;
-import view.ErrCodes;
 
 /**
  * This engine is configured to works with INTs whose size is at least 32bits.
@@ -14,7 +14,6 @@ import view.ErrCodes;
 public class Tester {
 	
 	private ShellMSG shell = new ShellMSG();
-    private static final String VERSION = "0.9";
 	
 	final int BASE = 0x20000;							//Starting point for RAM after ROM area.
 	private int TOP, MIDDLE;
@@ -175,6 +174,9 @@ public class Tester {
 		boolean ok = true;
 		
 		switch(a) {
+		case 0:
+			tester.shell.showHelp("-m");
+			break;
 		case 1: //For optional switch.
 			tester.shell.showHelp(args[0]);
 			break;
@@ -194,9 +196,7 @@ public class Tester {
 			}
 			break;
 			default:
-				tester.shell.showAbout();
-				tester.shell.showSyntax();
-				tester.shell.showCredits();
+				tester.shell.showErr(ErrCodes.TOOMANYPARAM,"");
 		}
 		
 	}

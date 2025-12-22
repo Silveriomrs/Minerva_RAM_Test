@@ -1,4 +1,4 @@
-package view;
+package model;
 
 public enum ErrCodes {
 	NOT_ENOUGH_PARAMS,
