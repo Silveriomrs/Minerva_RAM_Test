@@ -11,3 +11,7 @@ java -jar nameofthejar.jar
 
 Cheers,
 Popopo (aka Lindyhop)
+
+Changelog:
+0.93 => compiled to run from Java 11 + aesthetic changes
+0.94 => compiled to run from Java 1.8 + aesthetic changes + factoring
