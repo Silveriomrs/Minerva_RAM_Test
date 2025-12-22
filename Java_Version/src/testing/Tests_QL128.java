@@ -17,7 +17,7 @@ class Tests_QL128 {
 		tester.setAddress("0000200C");
 		tester.calc();
 		assertAll(
-				() -> assertEquals("00000001",tester.binaryToStr())
+				() -> assertArrayEquals(new int[]{0,0,0,0,0,0,0,1},tester.getBinArray())
 				//() -> assertEquals()	
 		);
 		
@@ -25,7 +25,7 @@ class Tests_QL128 {
 		Tester tester2 = new Tester("2001E548", "2001E549", "00020000", "QL128");
 		tester2.calc();
 		assertAll(
-				() -> assertEquals("00000001",tester2.binaryToStr())
+				() -> assertArrayEquals(new int[]{0,0,0,0,0,0,0,1},tester2.getBinArray())
 		);
 		
 	}

@@ -10,6 +10,7 @@ public class Value {
 	
 	private byte[] hexList;
 	private int[] decList;
+	private int value;
 	private boolean valid = false;
 	
 	public Value(String value) {
@@ -30,11 +31,15 @@ public class Value {
 		return this.valid;
 	}
 	
-	private boolean setValue(String value) {		
+	public int getValue() {
+		return this.value;
+	}
+	
+	private boolean setValue(String v) {		
 		//Check no null
-		boolean done = value != null;
+		boolean done = v != null;
 		//Remove spaces
-		String aux = value.trim();
+		String aux = v.trim();
 		//Check length == 4 bytes => 8 chars
 		done = aux.length() == 8;
 		//When it goes wrong stop and return false operation.
@@ -56,12 +61,14 @@ public class Value {
 			decList[i/2] = hexList[i/2] & 0xFF;
 		}
 		
+		this.value = Integer.parseInt(v, 16);
+		
 		return done;
 	}
 	
 	public String toString() {
 		//TODO: Clean commented old sentences.
-		String state ="value: ";
+		String state ="";
 		//String decstr = "Decimal value: ";
 		StringBuilder hex = new StringBuilder();
 		
@@ -71,7 +78,6 @@ public class Value {
 		}
 		
 		state += hex.toString() + "\n";
-		state += "Valid? : " + (isValid()? "yes":"no") + "\n";
 		
 		return state;
 	}

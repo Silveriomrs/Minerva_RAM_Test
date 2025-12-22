@@ -17,10 +17,9 @@ public class Tester {
 	
 	final int BASE = 0x20000;							//Starting point for RAM after ROM area.
 	private int TOP, MIDDLE;
-	private Value write,read;
-	private int address;
+	private Value write,read,address;
 	private TypeRamExpansion typeramexp;
-	private int[] binary = new int[8];;
+	private int[] binary = new int[8];
 
 	public Tester() {
 		//setting default values (example)
@@ -43,8 +42,12 @@ public class Tester {
 	}
 	
 	public void showResults() {
-		shell.showInputs(write, read, "" + this.typeramexp, binaryToStr());
-		shell.showFaultyICs(address, MIDDLE, binary, isOutInnerRAM());
+		shell.showInputs(write, read, address, "" + this.typeramexp);
+		shell.showFaultyICs(address.getValue(), MIDDLE, binary, isOutInnerRAM());
+	}
+	
+	public int[] getBinArray() {
+		return this.binary;
 	}
 	
 	private boolean isValidHEX(String h) {
@@ -80,7 +83,8 @@ public class Tester {
 		boolean OK = isValidHEX(v);
 		
 		if(OK) {
-			this.address = Integer.parseInt(v, 16);
+			//this.address = Integer.parseInt(v, 16);
+			this.address = new Value(v);;
 		} else {
 			shell.showErr(ErrCodes.WRONG_ADDRESS_VALUE,v);
 		}
@@ -129,16 +133,10 @@ public class Tester {
 		return orv;
 	}
 	
-	public String binaryToStr() {
-		String b = "";
-		for(int a : binary) { b += a; }
-		return b;
-	}
-	
 	private void setExample() {
 		this.write = new Value("548C4878");
 		this.read = new Value("5CCD5CCD");
-		this.address = 0x00032000;
+		this.address = new Value("00032000");
 		this.typeramexp = TypeRamExpansion.QL128;
 		calc();
 	}
@@ -162,7 +160,7 @@ public class Tester {
 	}
 	
 	private boolean isOutInnerRAM() {
-		return this.address > TOP;
+		return this.address.getValue() > TOP;
 	}
 	
 	/**
@@ -179,6 +177,11 @@ public class Tester {
 			break;
 		case 1: //For optional switch.
 			tester.shell.showHelp(args[0]);
+			if(args[0].equals("-e")) {
+				tester.setExample();
+				tester.calc();
+				tester.showResults();
+			}
 			break;
 		case 2: //not enough parameters
 			tester.shell.showErr(ErrCodes.NOT_ENOUGH_PARAMS,"");
@@ -198,6 +201,11 @@ public class Tester {
 			default:
 				tester.shell.showErr(ErrCodes.TOOMANYPARAM,"");
 		}
+		
+		//TODO: Remove after testing
+		tester.setExample();
+		tester.calc();
+		tester.showResults();
 		
 	}
 

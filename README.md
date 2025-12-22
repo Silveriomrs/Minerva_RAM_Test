@@ -7,6 +7,9 @@ Minerva RAM test is the name for this repository, but actually it has not accura
 
 A better name would be RAM Fail Test, but to follow the most known name, I keep it like it is.
 
+## Update
+22/12/2025 **Standalone Java version** for all platforms available.
+
 ## Introduction
 
 Sinclair QL power design often drove into a common problem of get a RAM IC faulty or burned out, **Dominic Brown** wrote in 1990 a rutine in **SuperBasic** that was able to detect in a very smart way which RAM IC was compleately out. The routine <ins>gives 3 codes to detect the faulty IC</ins>. The main problem was that for running this routine <ins>you would need a working QL with Microdrive or similar working device to run it out, what was not easy at all if you only own one machine</ins>. The use of emulators was not common at that time.
@@ -95,6 +98,21 @@ Not tested yet with mods of 640K (usually this mod has an extra IC in piggybag o
 ![Upper part of the GUI with the 2 first section](images/GUI_1.png) 
 ![Bottom part of the GUI with the example and credits](images/GUI_2.png) 
 
+## Standalone Java Version
+There is one full functional version standalone for shell enviroments. It will be changing some cosmetic details but same functional tool.
+
+*In some days also a standalone with GUI interface.*
+
+![Standalone Java APP working on MS.Windows11](images/JavaVersion_on_Win11.png) 
+*Running on windows 11*
+
+![Standalone Java APP working on MacMini M4](images/MacMiniM4.jpg) 
+*Running on MacMini M4*
+
+![Standalone Java APP working on MacMini M4](images/LinuxVersionx86.png) 
+*Running on Linux x86*
+
+---
 ## What's next?
 Here are some ideas that maybe I would attend.
 
@@ -103,7 +121,7 @@ Here are some ideas that maybe I would attend.
 - [X] Improve the user interface for better understanding
 - [X] Add to the user interface the controls to select the right QL
 - [ ] Add other suspect IC (multiplexers) based on the results
-- [ ] Create a Java APP to run to decode the codes without Internet
+- [X] Create a Java APP to run to decode the codes without Internet
 - [ ] Create a C program for Sinclair QL instead a Basic one
 - [ ] Create an external ROM with the C code to test a QL without opening it.
 - [ ] Add contextual help to the PHP code (without JavaScript) to helps to the user to determinate (*when required*) the kind of RAM it has.

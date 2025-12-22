@@ -24,11 +24,10 @@ public class ShellMSG {
 		
 	}
 	
-	public void showValue(String v, boolean isWrong) {
-		String c = (isWrong)? (RED + BOLD) : (GREEN + BOLD);
+	public String showValue(String v, boolean isValid) {
+		String c = (isValid)? (GREEN + BOLD) : (RED + BOLD); 
 		String txt = c + v + RESET;
-		
-		System.out.print(txt);
+		return txt;
 	}
 	
 	public void showErr(ErrCodes e, String value) {
@@ -51,12 +50,12 @@ public class ShellMSG {
 	}
 	
 	
-	public void showInputs(Value write, Value read, String typeramexp, String bin) {
+	public void showInputs(Value write, Value read, Value address, String typeramexp) {
 		String txt = BOLD + UNDERLINE + "\nINPUTS\n" + RESET;
-		txt += "\nWrite " + write.toString();
-		txt += "\nRead " + read.toString();
-		txt += "\nSystem: " + typeramexp;
-		txt += "\nBinary result: " + bin;
+		txt += "\nSystem:  " + YELLOW + typeramexp + RESET;
+		txt += "\nWrite:   " + showValue(write.toString(), write.isValid());
+		txt += "Read:    " + showValue(read.toString(), read.isValid());
+		txt += "Address: " + showValue(address.toString(), address.isValid());	
 		System.out.println(txt);
 	}
 	
@@ -152,18 +151,29 @@ public class ShellMSG {
 
 	}
 	
+	public String binaryToStr(int[] binary) {
+		String b = "";
+		for(int a : binary) { b += a; }
+		return b;
+	}
+	
 	public void showFaultyICs(int address, int MIDDLE, int[] binary, boolean isInnerRam) {
-		System.out.println(BOLD + UNDERLINE + "\nRESULTS\n" + RESET);
-		if(isInnerRam) System.out.println(GREEN + BOLD + "Faulty RAM is in expansion memory\n" + RESET);
+		String txt = BOLD + UNDERLINE + "\nRESULTS\n" + RESET;
+		txt += BOLD + "\nBinary result: " + YELLOW + binaryToStr(binary) + RESET;
+		//TODO add to print the address comparator with the top of Inner Ram.
+		
+		if(isInnerRam) txt += GREEN + BOLD + "Faulty RAM is in expansion memory\n" + RESET;
 		else {
-			String ic = "IC";
+			String ic = "\nIC";
 			// 8 ICs in high part of RAM or 8 ICs low part of RAM.
 			int n = (address >= MIDDLE)? 16:8;
 			//1 => BAD, 0 => GOOD
 			for(int i = 0; i < 8; i++) {
-				if(binary[i] == 1) System.out.println(BOLD + ic + (n-i) + RED + " BAD" + RESET);
-				else System.out.println(ic + (n-i) + GREEN + " GOOD" + RESET);
+				if(binary[i] == 1) txt += BOLD + ic + (n-i) + RED + " BAD" + RESET;
+				else txt += ic + (n-i) + GREEN + " GOOD" + RESET;
 			}
 		}
+		
+		System.out.println(txt);
 	}
 }
