@@ -61,13 +61,14 @@ public class ShellMSG {
 	
 	
 	private void showOptions() {
-		String txt = YELLOW + BOLD + UNDERLINE + "\nOptions:\n" + RESET;
+		String txt = YELLOW + BOLD + UNDERLINE + "\nOptions\n" + RESET;
 		txt += "java -jar ramtestdec.jar [OPTION] \n";
 		txt += BOLD + "\n-a    : " + RESET + " About this application.";
 		txt += BOLD + "\n-c    : " + RESET + " Shows the credits.";
 		txt += BOLD + "\n-e    : " + RESET + " Shows some examples.";
 		txt += BOLD + "\n-h    : " + RESET + " Shows full help.";
 		txt += BOLD + "\n-o    : " + RESET + " Shows the options.";
+		txt += BOLD + "\n-r    : " + RESET + " Run the APP with default example values.";
 		txt += BOLD + "\n-s    : " + RESET + " Shows the syntax.";
 		txt += BOLD + "\n-v    : " + RESET + " Shows the version.";
 		System.out.println(txt);
@@ -85,7 +86,6 @@ public class ShellMSG {
 	private void showMinHelp() {
 		showAbout();
 		showSyntax();
-		showExamples();
 	}
 	
 	public void showHelp(String v) {
@@ -104,9 +104,9 @@ public class ShellMSG {
 	}
 	
 	private void showSyntax() {
-		String txt = YELLOW + BOLD + UNDERLINE + "\nSyntax:\n" + RESET;
+		String txt = YELLOW + BOLD + UNDERLINE + "\nSyntax\n" + RESET;
 		txt += "java -jar ramtestdec.jar [OPTION] [WRITE READ ADDRESS] [QLRAM]";
-		txt += "\nFor help type: " + BOLD + GREEN + "java -jar ramtestdec.jar -h" + RESET;
+		txt += "\nFor help type: " + BOLD + GREEN + "java -jar ramtestdec.jar -h\n" + RESET;
 		System.out.println(txt);
 	}
 	
@@ -116,16 +116,16 @@ public class ShellMSG {
 	}
 	
 	private void showAbout() {
-		String txt = YELLOW + BOLD + UNDERLINE + "\nAbout:\n" + RESET;
+		String txt = YELLOW + BOLD + UNDERLINE + "\nAbout\n" + RESET;
 		txt += "This aplication has the purpose of decoding the 3 hexadecimal codes returned by the Minerva ROM,"+
 		"\nalso by the basic version of the Ram Tester Software programed by " + BOLD +"Dominic Brown." + RESET;
-		txt += "\n\n To report a bug, check new versions or any suggestion:"
+		txt += "\n\nTo report a bug, check new versions or any suggestion:"
 				+ GREEN + "\nhttps://github.com/Silveriomrs/Minerva_RAM_Test";
 		System.out.println(txt);
 	}
 	
 	private void showCredits() {
-		String txt = BOLD + YELLOW + UNDERLINE + "\nCredits:\n" + RESET;
+		String txt = BOLD + YELLOW + UNDERLINE + "\nCredits\n" + RESET;
 		txt += "The Original Program (ram3_ramfail.bas) was written for the SINCLAIR QL in SUPER BASIC language by"
 				+ BOLD + " Dominic Brown (1990)." + RESET + "\nConverted in PHP language by " + BOLD + "Xad/Nightfall (8/5/2015)."
 				+ RESET + " Update by Popopo to include the upgraded models (09/04/2025).";
@@ -139,7 +139,7 @@ public class ShellMSG {
 		txt += "Shows information about the tool\n";
 		txt += YELLOW + "java -jar ramtestdec.jar" + RESET;
 		//
-		txt += GREEN + BOLD + "\n\nExample 2: 3 arguments {write, read, address} hexadecimal codes of 8 bytes each\n" + RESET;
+		txt += GREEN + BOLD + "\n\nExample 2: 3 arguments {WRITE, READ, ADDRESS} of 8 hexadecimal numbers each\n" + RESET;
 		txt += "They are the main 3 codes, " + UNDERLINE + "all of them must be present " + RESET + "in order to decode them.\n";
 		txt += YELLOW + "java -jar ramtestdec.jar 70014E7B 70014F7B 0000200C" + RESET;
 		//
@@ -157,12 +157,18 @@ public class ShellMSG {
 		return b;
 	}
 	
-	public void showFaultyICs(int address, int MIDDLE, int[] binary, boolean isInnerRam) {
+	public String showAddressGraph(int addr, int bas, int mid, int top) {
+		String txt = "";
+		txt += BOLD + ((addr >= mid)? ">":"<");
+		return txt;
+	}
+	
+	public void showFaultyICs(int address, int BASE, int MIDDLE, int TOP , int[] binary) {
 		String txt = BOLD + UNDERLINE + "\nRESULTS\n" + RESET;
 		txt += BOLD + "\nBinary result: " + YELLOW + binaryToStr(binary) + RESET;
 		//TODO add to print the address comparator with the top of Inner Ram.
 		
-		if(isInnerRam) txt += GREEN + BOLD + "Faulty RAM is in expansion memory\n" + RESET;
+		if(address > TOP) txt += GREEN + BOLD + "Faulty RAM is in expansion memory\n" + RESET;
 		else {
 			String ic = "\nIC";
 			// 8 ICs in high part of RAM or 8 ICs low part of RAM.

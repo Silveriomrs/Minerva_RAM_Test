@@ -15,9 +15,13 @@ public class Tester {
 	
 	private ShellMSG shell = new ShellMSG();
 	
-	final int BASE = 0x20000;							//Starting point for RAM after ROM area.
-	private int TOP, MIDDLE;
-	private Value write,read,address;
+	final static int BASE = 0x20000;							//Starting point for RAM after ROM area.
+	private static int TOP;
+
+	private static int MIDDLE;
+	private Value write,read;
+
+	private static Value address;
 	private TypeRamExpansion typeramexp;
 	private int[] binary = new int[8];
 
@@ -43,7 +47,7 @@ public class Tester {
 	
 	public void showResults() {
 		shell.showInputs(write, read, address, "" + this.typeramexp);
-		shell.showFaultyICs(address.getValue(), MIDDLE, binary, isOutInnerRAM());
+		shell.showFaultyICs(address.getValue(), BASE, MIDDLE, TOP, binary);
 	}
 	
 	public int[] getBinArray() {
@@ -159,7 +163,7 @@ public class Tester {
 		return (TOP - BASE)/2 + BASE;
 	}
 	
-	private boolean isOutInnerRAM() {
+	private boolean isInnerRAM() {
 		return this.address.getValue() > TOP;
 	}
 	
@@ -171,13 +175,15 @@ public class Tester {
 		int a = args.length;
 		boolean ok = true;
 		
+		System.out.println();
+		
 		switch(a) {
 		case 0:
 			tester.shell.showHelp("-m");
 			break;
 		case 1: //For optional switch.
 			tester.shell.showHelp(args[0]);
-			if(args[0].equals("-e")) {
+			if(args[0].equals("-r")) {
 				tester.setExample();
 				tester.calc();
 				tester.showResults();
@@ -202,10 +208,12 @@ public class Tester {
 				tester.shell.showErr(ErrCodes.TOOMANYPARAM,"");
 		}
 		
-		//TODO: Remove after testing
-		tester.setExample();
-		tester.calc();
-		tester.showResults();
+		System.out.println("--------------------------------------------------------------------------------\n");
+//		//TODO: Remove after testing
+//		tester.setExample();
+//		tester.calc();
+		//tester.showResults();
+		tester.shell.showAddressGraph(address.getValue(), BASE, MIDDLE, TOP);
 		
 	}
 
