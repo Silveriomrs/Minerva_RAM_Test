@@ -19,6 +19,7 @@ public class ShellMSG {
     public static final String YELLOW = "\u001B[33m";
     public static final String BOLD = "\033[1m";
     public static final String UNDERLINE = "\033[4m";
+    public static final String RED_BGD = "\u001B[41m"; 							// Red background
 	
 	public ShellMSG() {
 		
@@ -95,7 +96,8 @@ public class ShellMSG {
 		case "-e" : showExamples() ; break;										//Examples
 		case "-h" : showFullHelp() ; break;										//Full  help
 		case "-m" : showMinHelp(); break;
-		case "-o" : showOptions() ; break;										//Options
+		case "-o" : showOptions() ; break;			
+		case "-r" :  break;													    //Run the default example. No need nothing here.
 		case "-s" : showSyntax() ; break;										//Syntax
 		case "-v" : showVersion(); break;										//Version
 		default:
@@ -157,17 +159,72 @@ public class ShellMSG {
 		return b;
 	}
 	
-	public String showAddressGraph(int addr, int bas, int mid, int top) {
+	private String getMaxRAM(int top) {
+		String txt = BOLD;
+		if(top == 0x40000) {
+			//128K => ceil at 40000H (default)
+			txt += "128K";
+		}else if(top == 0xA0000) {
+			//512K => ceil at A0000H
+			txt += "512K";
+		}else if(top == 0xC0000) {
+			//640K => ceil at C0000H
+			txt += "640K";
+		}else {
+			
+		}
+		
+		return txt;
+	}
+	
+	private String showAddressGraph(int addr, int bas, int mid, int top) {
 		String txt = "";
-		txt += BOLD + ((addr >= mid)? ">":"<");
+		String a = String.format("%05Xh",addr);
+		String b = String.format("%05Xh",bas);
+		String m = String.format("%05Xh",mid);
+		String t = String.format("%05Xh",top);
+		
+		txt += GREEN + a + RESET;
+		
+		if(addr >= mid && addr <= top) {
+			txt += " > " + YELLOW + m + "\n" + RESET;
+		}else if (addr > top) {
+			txt += " > " + YELLOW + t + "\n" + RESET;
+		}else if (addr == mid) {
+			txt += " = " + YELLOW + m + "\n" + RESET;
+		}else {
+			txt += " < " + YELLOW + m + "\n" + RESET;
+		}
+		
+		txt += "\n";
+		txt +=  "--|--|--|--|--|- \n";
+		txt += "|" + ((addr > top)? RED_BGD:RESET) + "              " + RESET + "| \n";
+
+		txt += "|" + ((addr > top)? RED_BGD:RESET) + "   EXTERNAL   " + RESET + "| \n";
+		txt += "|" + ((addr > top)? RED_BGD:RESET) + "     RAM      " + RESET + "| \n";
+		txt += "================ " + t + "\n";	
+		txt += "|" + (((addr > mid) && (addr < top) )? RED_BGD:RESET) + "    ("+ getMaxRAM(top) + ")    " + RESET + "| \n";
+		txt += "|" + (((addr > mid) && (addr < top) )? RED_BGD:RESET) + "  [HIGH RAM]  " + RESET + "| \n";
+		txt += "|" + (((addr > mid) && (addr < top) )? RED_BGD:RESET) + "              " + RESET + "| \n";
+		txt += "-" + ((addr == mid )? RED_BGD:RESET) + "--------------- " + m + RESET + "\n";
+		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "              " + RESET + "| \n";
+		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "  [LOW RAM]   " + RESET + "| \n";
+		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "              " + RESET + "| \n";
+		txt += "================ " + b + "\n";
+		txt += "|              | \n";
+		txt += "|  [ROM AREA]  |\n";
+		txt += "================ " + String.format("%05Xh%n",0);
+				
 		return txt;
 	}
 	
 	public void showFaultyICs(int address, int BASE, int MIDDLE, int TOP , int[] binary) {
-		String txt = BOLD + UNDERLINE + "\nRESULTS\n" + RESET;
-		txt += BOLD + "\nBinary result: " + YELLOW + binaryToStr(binary) + RESET;
+		String txt = BOLD + UNDERLINE + "\nRESULTS\n\n" + RESET;
 		//TODO add to print the address comparator with the top of Inner Ram.
-		
+		txt += showAddressGraph(address,BASE,MIDDLE,TOP);
+		txt += BOLD + "\nBinary result: " + YELLOW + binaryToStr(binary) + RESET + "\n";
+
+		//
 		if(address > TOP) txt += GREEN + BOLD + "Faulty RAM is in expansion memory\n" + RESET;
 		else {
 			String ic = "\nIC";

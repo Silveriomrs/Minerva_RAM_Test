@@ -140,7 +140,7 @@ public class Tester {
 	private void setExample() {
 		this.write = new Value("548C4878");
 		this.read = new Value("5CCD5CCD");
-		this.address = new Value("00032000");
+		Tester.address = new Value("00032000");
 		this.typeramexp = TypeRamExpansion.QL128;
 		calc();
 	}
@@ -213,7 +213,10 @@ public class Tester {
 //		tester.setExample();
 //		tester.calc();
 		//tester.showResults();
-		tester.shell.showAddressGraph(address.getValue(), BASE, MIDDLE, TOP);
+//		tester.typeramexp = TypeRamExpansion.QL512;
+//		tester.calc();
+//		//tester.shell.showAddressGraph(address.getValue(), BASE, MIDDLE, TOP);
+//		tester.showResults();
 		
 	}
 
