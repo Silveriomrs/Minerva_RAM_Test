@@ -13,19 +13,19 @@ public class ShellMSG {
 	
     private static final String VERSION = "0.93";
 
-	public static final String RESET  = "\u001B[0m";
-    public static final String RED    = "\u001B[31m";
-    public static final String GREEN  = "\u001B[32m";
-    public static final String YELLOW = "\u001B[33m";
-    public static final String BOLD = "\033[1m";
-    public static final String UNDERLINE = "\033[4m";
-    public static final String RED_BGD = "\u001B[41m"; 							// Red background
+	public static String RESET  = "\u001B[0m";
+    public static String RED    = "\u001B[31m";
+    public static String GREEN  = "\u001B[32m";
+    public static String YELLOW = "\u001B[33m";
+    public static String BOLD = "\033[1m";
+    public static String UNDERLINE = "\033[4m";
+    public static String RED_BGD = "\u001B[41m"; 							// Red background
 	
 	public ShellMSG() {
 		
 	}
 	
-	public String showValue(String v, boolean isValid) {
+	private String showValue(String v, boolean isValid) {
 		String c = (isValid)? (GREEN + BOLD) : (RED + BOLD); 
 		String txt = c + v + RESET;
 		return txt;
@@ -33,15 +33,15 @@ public class ShellMSG {
 	
 	public void showErr(ErrCodes e, String value) {
 		String txt = "";
-		showValue(value,true);
+		txt += showValue(value,false);
 		
 		switch(e) {
 		case NOT_ENOUGH_PARAMS: txt = RED + BOLD + "Not enough parameters"; break;
-		case UNKNOWN_PARAM: txt = " : Unknown paramater"; break;
-		case WRONG_WRITE_VALUE: txt = " : Wrong WRITE value"; break;
-		case WRONG_READ_VALUE: txt = " : Wrong READ value"; break;
-		case WRONG_ADDRESS_VALUE: txt = " : Wrong ADDRESS value"; break;
-		case WRONG_QLRAM_VALUE: txt = " : Wrong QLRAM value"; break;
+		case UNKNOWN_PARAM: txt += " : Unknown paramater"; break;
+		case WRONG_WRITE_VALUE: txt += " : Wrong WRITE value"; break;
+		case WRONG_READ_VALUE: txt += " : Wrong READ value"; break;
+		case WRONG_ADDRESS_VALUE: txt += " : Wrong ADDRESS value"; break;
+		case WRONG_QLRAM_VALUE: txt += " : Wrong QLRAM value"; break;
 		default:
 			txt = RED + BOLD + "\nToo many parameters\n" + RESET + "use" + GREEN + 
 			BOLD + " -e " + RESET + "argument to get some valid examples.";
@@ -68,8 +68,9 @@ public class ShellMSG {
 		txt += BOLD + "\n-c    : " + RESET + " Shows the credits.";
 		txt += BOLD + "\n-e    : " + RESET + " Shows some examples.";
 		txt += BOLD + "\n-h    : " + RESET + " Shows full help.";
+		txt += BOLD + "\n-nc    : " + RESET + " Disables Ansi colors for non supported consoles. It must be the last argument.";
 		txt += BOLD + "\n-o    : " + RESET + " Shows the options.";
-		txt += BOLD + "\n-r    : " + RESET + " Run the APP with default example values.";
+		txt += BOLD + "\n-re    : " + RESET + " Run an example case.";
 		txt += BOLD + "\n-s    : " + RESET + " Shows the syntax.";
 		txt += BOLD + "\n-v    : " + RESET + " Shows the version.";
 		System.out.println(txt);
@@ -90,14 +91,15 @@ public class ShellMSG {
 	}
 	
 	public void showHelp(String v) {
-		switch(v){
+		switch(v.toLowerCase()){
 		case "-a" : showAbout(); break;
 		case "-c" : showCredits(); break;										//Credits
 		case "-e" : showExamples() ; break;										//Examples
 		case "-h" : showFullHelp() ; break;										//Full  help
 		case "-m" : showMinHelp(); break;
+		case "-nc" : disableColors(); break;									//Disable ANSI Colors.
 		case "-o" : showOptions() ; break;			
-		case "-r" :  break;													    //Run the default example. No need nothing here.
+		case "-re" : break;													    //Run the default example. No need nothing here.
 		case "-s" : showSyntax() ; break;										//Syntax
 		case "-v" : showVersion(); break;										//Version
 		default:
@@ -105,9 +107,19 @@ public class ShellMSG {
 		}
 	}
 	
+	private void disableColors() {
+		RESET  = "";
+	    RED    = "";
+	    GREEN  = "";
+	    YELLOW = "";
+	    BOLD = "";
+	    UNDERLINE = "";
+	    RED_BGD = "";
+	}
+	
 	private void showSyntax() {
 		String txt = YELLOW + BOLD + UNDERLINE + "\nSyntax\n" + RESET;
-		txt += "java -jar ramtestdec.jar [OPTION] [WRITE READ ADDRESS] [QLRAM]";
+		txt += "java -jar ramtestdec.jar [OPTION] [WRITE READ ADDRESS] [QLRAM] [-NC]";
 		txt += "\nFor help type: " + BOLD + GREEN + "java -jar ramtestdec.jar -h\n" + RESET;
 		System.out.println(txt);
 	}

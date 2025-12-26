@@ -19,9 +19,7 @@ public class Tester {
 	private static int TOP;
 
 	private static int MIDDLE;
-	private Value write,read;
-
-	private static Value address;
+	private static Value write,read,address;
 	private TypeRamExpansion typeramexp;
 	private int[] binary = new int[8];
 
@@ -64,7 +62,7 @@ public class Tester {
 	public boolean setWrite(String v) {
 		boolean OK = isValidHEX(v);
 		if(OK) {
-			this.write = new Value(v);
+			Tester.write = new Value(v);
 		} else {
 			shell.showErr(ErrCodes.WRONG_WRITE_VALUE,v);
 		}
@@ -75,7 +73,7 @@ public class Tester {
 	public boolean setRead(String v) {
 		boolean OK = isValidHEX(v);
 		if(OK) {
-			this.read = new Value(v);
+			Tester.read = new Value(v);
 		} else {
 			shell.showErr(ErrCodes.WRONG_READ_VALUE,v);
 		}
@@ -88,7 +86,7 @@ public class Tester {
 		
 		if(OK) {
 			//this.address = Integer.parseInt(v, 16);
-			this.address = new Value(v);;
+			Tester.address = new Value(v);;
 		} else {
 			shell.showErr(ErrCodes.WRONG_ADDRESS_VALUE,v);
 		}
@@ -112,7 +110,7 @@ public class Tester {
 		//after setting example environment, set Top RAM according to it.
 		setTop();
 		//set the middle point.
-		this.MIDDLE = getMiddle();
+		Tester.MIDDLE = getMiddle();
 		calcBIN();
 	}
 	
@@ -138,8 +136,8 @@ public class Tester {
 	}
 	
 	private void setExample() {
-		this.write = new Value("548C4878");
-		this.read = new Value("5CCD5CCD");
+		Tester.write = new Value("548C4878");
+		Tester.read = new Value("5CCD5CCD");
 		Tester.address = new Value("00032000");
 		this.typeramexp = TypeRamExpansion.QL128;
 		calc();
@@ -164,13 +162,14 @@ public class Tester {
 	}
 	
 	private boolean isInnerRAM() {
-		return this.address.getValue() > TOP;
+		return Tester.address.getValue() > TOP;
 	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		//Create a object with default values example.
 		Tester tester = new Tester();
 		int a = args.length;
 		boolean ok = true;
@@ -183,22 +182,28 @@ public class Tester {
 			break;
 		case 1: //For optional switch.
 			tester.shell.showHelp(args[0]);
-			if(args[0].equals("-r")) {
-				tester.setExample();
-				tester.calc();
+			if(args[0].equals("-re")) {
 				tester.showResults();
 			}
 			break;
 		case 2: //not enough parameters
 			tester.shell.showErr(ErrCodes.NOT_ENOUGH_PARAMS,"");
 			break;
-		case 3:
-			ok = tester.setTypeRAM("QL128") && ok;
-		case 4:
+		case 3: //Default type of QLRAM is 128K from constructor: W R A
+		case 4:	//Possible cases for 4 args: W R A M  or  NC W R A   
+		case 5:	//the only case for NC switch and 5 args: NC W R A M			  
+			int i = 0;
+			if(args[a-1].equals("-nc")) {
+				tester.shell.showHelp(args[0]);
+				i++;
+			}
+			
 			ok = tester.setRead(args[0]) && ok;
 			ok = tester.setWrite(args[1]) && ok;
 			ok = tester.setAddress(args[2]) && ok;
-			if(a == 4) ok = tester.setTypeRAM(args[4]) && ok;
+			//Set QL Ram amount based on the args size options.
+			if((i == 1 && a == 5) || (i == 0 && a == 4)) ok = tester.setTypeRAM(args[3]) && ok;
+			
 			if(ok) {
 				tester.calc();
 				tester.showResults();
@@ -209,9 +214,7 @@ public class Tester {
 		}
 		
 		System.out.println("--------------------------------------------------------------------------------\n");
-//		//TODO: Remove after testing
-//		tester.setExample();
-//		tester.calc();
+		//TODO: Remove after testing
 		//tester.showResults();
 //		tester.typeramexp = TypeRamExpansion.QL512;
 //		tester.calc();
