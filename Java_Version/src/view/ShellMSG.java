@@ -68,9 +68,9 @@ public class ShellMSG {
 		txt += BOLD + "\n-c    : " + RESET + " Shows the credits.";
 		txt += BOLD + "\n-e    : " + RESET + " Shows some examples.";
 		txt += BOLD + "\n-h    : " + RESET + " Shows full help.";
-		txt += BOLD + "\n-nc    : " + RESET + " Disables Ansi colors for non supported consoles. It must be the last argument.";
+		txt += BOLD + "\n-nc   : " + RESET + " Disables Ansi colors for non supported consoles. It must be the last argument.";
 		txt += BOLD + "\n-o    : " + RESET + " Shows the options.";
-		txt += BOLD + "\n-re    : " + RESET + " Run an example case.";
+		txt += BOLD + "\n-re   : " + RESET + " Run an example case.";
 		txt += BOLD + "\n-s    : " + RESET + " Shows the syntax.";
 		txt += BOLD + "\n-v    : " + RESET + " Shows the version.";
 		System.out.println(txt);
@@ -90,7 +90,7 @@ public class ShellMSG {
 		showSyntax();
 	}
 	
-	public void showHelp(String v) {
+	public void setSwitch(String v) {
 		switch(v.toLowerCase()){
 		case "-a" : showAbout(); break;
 		case "-c" : showCredits(); break;										//Credits
@@ -148,7 +148,7 @@ public class ShellMSG {
 	}
 	
 	private void showExamples() {
-		String txt = "\nThe Ram Test Decoder has" + BOLD + " 3 workings modes, " + RESET + " let's see them with 3 examples:";
+		String txt = "\nThe Ram Test Decoder has" + BOLD + " 4 workings modes, " + RESET + " let's see them with 3 examples:";
 		txt += GREEN + BOLD + "\n\nExample 1: No arguments\n" + RESET;
 		txt += "Shows information about the tool\n";
 		txt += YELLOW + "java -jar ramtestdec.jar" + RESET;
@@ -161,6 +161,11 @@ public class ShellMSG {
 		txt += "\nThe fourth argument is optional and could be: (default) QL128 , QL512 , QL640\n";
 		txt += "\nwhen it is not present the decoder takes the most common setup for Sinclair QL with 128KB of RAM\n";
 		txt += YELLOW + "java -jar ramtestdec.jar 70014E7B 70014F7B 000200C" + GREEN + " QL512" + RESET;
+		//
+		txt += GREEN + BOLD + "\n\nExample 4: No colors, same before adding the switch -nc at the end" + RESET;
+		txt += "\nThe '-nc' argument is optional and deactivate ANSI console codes for systems that are not able to show them properly";
+		txt += YELLOW + "\njava -jar ramtestdec.jar 70014E7B 70014F7B 000200C" + GREEN + " -nc" + RESET;
+		txt += YELLOW + "\njava -jar ramtestdec.jar -h" + GREEN + " -nc" + RESET;
 		System.out.println(txt);
 
 	}
@@ -208,6 +213,8 @@ public class ShellMSG {
 			txt += " < " + YELLOW + m + "\n" + RESET;
 		}
 		
+		//TODO: Determinate if the limit (top, middle, whatever) is included when addressing. Can write at top?
+		
 		txt += "\n";
 		txt +=  "--|--|--|--|--|- \n";
 		txt += "|" + ((addr > top)? RED_BGD:RESET) + "              " + RESET + "| \n";
@@ -215,9 +222,9 @@ public class ShellMSG {
 		txt += "|" + ((addr > top)? RED_BGD:RESET) + "   EXTERNAL   " + RESET + "| \n";
 		txt += "|" + ((addr > top)? RED_BGD:RESET) + "     RAM      " + RESET + "| \n";
 		txt += "================ " + t + "\n";	
-		txt += "|" + (((addr > mid) && (addr < top) )? RED_BGD:RESET) + "    ("+ getMaxRAM(top) + ")    " + RESET + "| \n";
-		txt += "|" + (((addr > mid) && (addr < top) )? RED_BGD:RESET) + "  [HIGH RAM]  " + RESET + "| \n";
-		txt += "|" + (((addr > mid) && (addr < top) )? RED_BGD:RESET) + "              " + RESET + "| \n";
+		txt += "|" + (((addr > mid) && (addr <= top) )? RED_BGD:RESET) + "    ("+ getMaxRAM(top) + ")    " + RESET + "| \n";
+		txt += "|" + (((addr > mid) && (addr <= top) )? RED_BGD:RESET) + "  [HIGH RAM]  " + RESET + "| \n";
+		txt += "|" + (((addr > mid) && (addr <= top) )? RED_BGD:RESET) + "              " + RESET + "| \n";
 		txt += "-" + ((addr == mid )? RED_BGD:RESET) + "--------------- " + m + RESET + "\n";
 		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "              " + RESET + "| \n";
 		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "  [LOW RAM]   " + RESET + "| \n";
