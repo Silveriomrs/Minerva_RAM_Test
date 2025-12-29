@@ -101,6 +101,8 @@ Not tested yet with mods of 640K (usually this mod has an extra IC in piggybag o
 ## Standalone Java Version
 There is one full functional version standalone for shell enviroments. It will be changing some cosmetic details but same functional tool.
 
+[Download Java version](Java_Version/compiled_versions)
+
 *In some days also a standalone with GUI interface.*
 
 ![Standalone Java APP working on MS.Windows11](images/JavaVersion_on_Win11.png) 
@@ -122,6 +124,7 @@ Here are some ideas that maybe I would attend.
 - [X] Add to the user interface the controls to select the right QL
 - [ ] Add other suspect IC (multiplexers) based on the results
 - [X] Create a Java APP to run to decode the codes without Internet
+- [X] Create a graphical representation of results (Memory map & IC Layout)
 - [ ] Create a C program for Sinclair QL instead a Basic one
 - [ ] Create an external ROM with the C code to test a QL without opening it.
 - [ ] Add contextual help to the PHP code (without JavaScript) to helps to the user to determinate (*when required*) the kind of RAM it has.
