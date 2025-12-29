@@ -1,19 +1,27 @@
+# Compiled version #
 This folder contains the different standalone Java "compiled" versions.
+Download the version you like the most and unzip it or run it.
 
-Requiriments:
-Java JRE/JDK 11 or later.
-Java in your system path (if not included already)
-or
-direct call to the java runtime on your system.
+**Requiriments**
+1. Java JRE/JDK 8 or later.
+3. The codes obtained by any test (Minerva ROM, SBasic implementation, whatever)
+4. It runs (tested) with MSWindows, Linux, MacMini M4 (ARM), but should work fine in any OS with Java.
 
-syntax:
-java -jar nameofthejar.jar
+**syntax**
 
-Cheers,
-Popopo (aka Lindyhop)
+java -jar nameofthejar.jar [OPTION] [WRITE,READ,ADDRESS] [-NC]
 
-Changelog:
+**Example**
+
+java -jar ramtestdec.jar 67084842 67084842 0003CC88
+
+
+## Changelog ##
+
 0.93 => compiled to run from Java 11 + aesthetic changes
+
 0.94 => compiled to run from Java 1.8 + aesthetic changes + factoring
+
 0.96b => added graphical representation of the faulty ram map zone afected also added no colors option for terminals that doesn't support ANSI codes. Other minor changes.
+
 0.97c => Added graphical layout of the results. Added some extra information, bug fixes and minor changes.
