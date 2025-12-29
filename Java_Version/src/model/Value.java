@@ -31,6 +31,10 @@ public class Value {
 		return this.valid;
 	}
 	
+	/**
+	 * Gives the stored value in Hex format.
+	 * @return
+	 */
 	public int getValue() {
 		return this.value;
 	}
@@ -61,7 +65,9 @@ public class Value {
 			decList[i/2] = hexList[i/2] & 0xFF;
 		}
 		
-		this.value = Integer.parseInt(v, 16);
+		//TODO: Delete this line after testing it properly
+//		this.value = Integer.parseInt(v, 16);
+		this.value = Integer.parseUnsignedInt(v, 16);
 		
 		return done;
 	}
