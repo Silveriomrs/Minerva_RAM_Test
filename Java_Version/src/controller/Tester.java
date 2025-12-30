@@ -22,7 +22,9 @@ public class Tester {
 	private Value write,read,address;
 	private TypeRamExpansion typeramexp;
 	private int[] binary = new int[8];
-
+	private boolean allICfine = true;							// Flag to mark case when all ICs are OK.
+	
+	
 	public Tester() {
 		//setting default values (example)
 		setExample();
@@ -45,7 +47,13 @@ public class Tester {
 	
 	public void showResults() {
 		shell.showInputs(write, read, address, "" + this.typeramexp);
-		shell.showFaultyICs(address.getValue(), BASE, MIDDLE, TOP, binary);
+		
+		if(!allICfine) {
+			shell.showFaultyICs(address.getValue(), BASE, MIDDLE, TOP, binary);
+		}else {
+			shell.showNoFaultyRAM(address.getValue(), BASE, MIDDLE, TOP);
+		}
+		
 	}
 	
 	public int[] getBinArray() {
@@ -115,7 +123,9 @@ public class Tester {
 	}
 	
 	private int calcBIN() {
-		//Auxiliar array to store xor values between write and read.
+		//Restart AllICfine to true.
+		allICfine = true;
+		//Auxiliary array to store xor values between write and read.
 		int cx[] = new int[4];
 		//Decimal results from OR operation on the elements of cx array.
 		int orv = 0;
@@ -127,9 +137,11 @@ public class Tester {
 			orv = orv | cx[i];
 		}
 		
-		//Let's start by the MSB
+		//Let's start by the MSB to store the bits
 		for(int i = 7; i >= 0; i--) {
-			this.binary[7-i] = (orv >> i) & 1;
+			binary[7-i] = (orv >> i) & 1;
+			//Mark if ANY of the IC is faulty. First state = true
+			if(allICfine && (binary[7-i] == 1)) allICfine = false;
 		}
 		
 		return orv;
@@ -186,7 +198,8 @@ public class Tester {
 			if(args[0].equals("-re")) showResults();
 			break;
 		case 2: //not enough parameters
-			if(!color) shell.setSwitch(args[0]);
+			if(!color && args[0].equals("-re")) showResults();   		//No color and run example
+			else if(!color) shell.setSwitch(args[0]);					//No color and a information parameter
 			else shell.showErr(ErrCodes.NOT_ENOUGH_PARAMS,"");
 			break;
 		case 3: //Default type of QLRAM is 128K from constructor: W R A
@@ -216,19 +229,34 @@ public class Tester {
 	}
 	
 	/**
-	 * @param args
+	 * Function to keep internal tests of the APP without messing around with the main code.
+	 */
+	public void test() {
+		//TODO: Remove after testing
+		//Test special case all RAM is OK
+		write = new Value("548C4878");
+		read = new Value("548C4878");
+		address = new Value("00032000");	
+		//
+//		tester.typeramexp = TypeRamExpansion.QL512;
+		calc();
+//		shell.showAddressGraph(address.getValue(), BASE, MIDDLE, TOP);
+//		shell.setSwitch("-nc");
+//		shell.setSwitch("-e");
+		showResults();
+	}
+	
+	/**
+	 * Launcher of the APP.
+	 * @param args [OPTION] [WRITE,READ,ADDRESS] [-NC] 
 	 */
 	public static void main(String[] args) {
 		//Create a object with default values example.
 		Tester tester = new Tester();
 		boolean ok = tester.processArgs(args);
-		//TODO: Remove after testing
-//		tester.typeramexp = TypeRamExpansion.QL512;
-//		tester.calc();
-//		//tester.shell.showAddressGraph(address.getValue(), BASE, MIDDLE, TOP);
-//		tester.shell.setSwitch("-nc");
-//		tester.shell.setSwitch("-e");
-//		tester.showResults();
+		
+		//For testing purpose. Comment/de-comment.
+//		tester.test();
 		
 	}
 

@@ -1,5 +1,7 @@
 /**
- * 
+ * View part of the application.
+ * @author Silverio MRS. (aka Popopo,Lindyhop)
+ * @version 1.0
  */
 package view;
 
@@ -7,11 +9,14 @@ import model.ErrCodes;
 import model.Value;
 
 /**
- * 
+ * The class is in charge of the view component of the tool.
+ * Mainly hosts the messages and functions to represent the texts properly in the console.
+ * @author Silverio MRS. (aka Popopo,Lindyhop)
+ * @version 1.0
  */
 public class ShellMSG {
 	
-    private static final String VERSION = "0.97c";
+    private static final String VERSION = "0.98a";
 
 	public static String RESET  = "\u001B[0m";
     public static String RED    = "\u001B[31m";
@@ -19,9 +24,10 @@ public class ShellMSG {
     public static String YELLOW = "\u001B[33m";
     public static String BOLD = "\033[1m";
     public static String UNDERLINE = "\033[4m";
-    public static String RED_BGD = "\u001B[41m"; 							// Red background
-    //No color activated or non activated.
-    private boolean NC = false;
+    public static String RED_BGD = "\u001B[41m"; 						// Red background
+    public static String CYAN_BGD = "\u001B[46m"; 						// Yellow background
+   
+    private boolean NC = false;											//Flag No color activated.
 	
 	public ShellMSG() {
 		
@@ -129,6 +135,7 @@ public class ShellMSG {
 	    BOLD = "";
 	    UNDERLINE = "";
 	    RED_BGD = "";
+	    CYAN_BGD = "";
 	}
 	
 	private void showSyntax() {
@@ -196,11 +203,11 @@ public class ShellMSG {
 		txt += "This software requires 3 hexadecimal codes that you may obtain mainly from the use of"
 				+ UNDERLINE +"\nMinerva ROM" + RESET + " or another software that implement the algorithm. "
 				+ "\nThe three codes represent a " + BOLD + "writen" + RESET + " value at the " + BOLD + "address" + RESET + " indicated by"
-				+ "the third one, \nand the value " + BOLD + "read " + RESET +"(second value) from this address after writing operation.\n";
+				+ " the third one, \nand the " + BOLD + "read " + RESET +"value (second one) from this address after writing operation.\n";
 		
 		txt += "\nThose values must be typed in the following order:" + BOLD + " {WRITE,READ,ADDRESS}" + RESET + " which is exactly"
 				+ "\nthe order that Minerva ROM gives them. After decoding those values, the software will"
-				+ "\nshow the results, indicanting which faulty RAM ICs " + BOLD + UNDERLINE + "are suspects" 
+				+ "\nshow the results, pointing to the faulty RAM ICs " + BOLD + UNDERLINE + "are suspects" 
 				+ RESET + ".";
 		
 		txt += "\n\nThe default system is a stock QL with 128K of RAM, but you may need to select other"
@@ -239,12 +246,43 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
-	public String binaryToStr(int[] binary) {
+	private String binaryToStr(int[] binary) {
 		String b = "";
 		for(int a : binary) { b += a; }
 		return b;
 	}
 	
+	public void showNoFaultyRAM(int addr, int bas, int mid, int top) {
+		String txt = BOLD + UNDERLINE + "\nRESULTS\n\n" + RESET;
+		//Change remark to yellow color to remark related issue but not faulty RAM IC
+		RED_BGD = CYAN_BGD;
+		txt += showAddressGraph(addr,bas,mid,top);
+		//Explanation.
+		txt += BOLD + YELLOW + UNDERLINE + "\nRARE CASE\n" + RESET;
+		txt += "\nInitially " + UNDERLINE + GREEN + "there is no faulty RAM" + RESET + ". Written data match read, but somehow"
+				+ "\nthe routine was fired by a non controlled event with an erratic Address.";
+		//
+		txt += "\n\nIt doesn't mean that all RAM is 100% right yet, but the test (Minerva, external test,"
+				+ "\netc) cannot assert there is a faulty one. Actually, this kind of situation means that a"
+				+ "\nline/s controlled by an IC (CPU, ULA, external card, CPLD, etc) is being altered"
+				+ "\nfiring the test with a fake RAM error.";
+		//
+		txt += YELLOW + "\n\nIf the error in your QL (3 codes) appears repetidly, it's recommended to " + UNDERLINE + "remove any"
+				+ "\nexternal or expansion card" + RESET + YELLOW + " and observe if it continues happening.";
+		
+		txt += "\n\n" + BOLD + "Not only" + RESET + YELLOW + " but the suspects in priority order are:"
+				+ "\nExternal card, a loose cable, CPU, ZX8301, ZX8302. In Iss6/7 boards also IC38 (HAL)" + RESET;
+		System.out.println(txt);
+		drawLine(2);
+
+	}
+	
+	/**
+	 * Gives the present amount of RAM in the PCB based on the TOP address given.
+	 * <P>It may vary on 3 main values: 128K, 512K and 640K. Depending on the address given in hexadecimal (unsigned).
+	 * @param top of RAM that may be: 40000H for 128K, A0000h for 612K and C0000h for 640K.
+	 * @return The String with the amount of RAM present on the main PCB.
+	 */
 	private String getMaxRAM(int top) {
 		String txt = BOLD;
 		if(top == 0x40000) {
@@ -257,56 +295,77 @@ public class ShellMSG {
 			//640K => ceil at C0000H
 			txt += "640K";
 		}else {
-			
+			txt += "UNKNOWN";
 		}
 		
 		return txt;
 	}
 	
+	/**
+	 * Prepares the graphical representation of the faulty ICs, the area affected and listed binary result.
+	 *  The function returns a String with the ASCII graphical information colored or signaled by symbols.
+	 *   the parameters are in Hexadecimal unsigned representation.
+	 * @param addr Address of the issue given by Minerva.
+	 * @param bas Address of the RAM base (after ROM).
+	 * @param mid Address of the middle of RAM.
+	 * @param top Last address of the RAM.
+	 * @return Graphical representation in ASCII of the results colored or with symbols.
+	 */
 	private String showAddressGraph(int addr, int bas, int mid, int top) {
 		String txt = "";
 		String a = String.format("%05Xh",addr);
 		String b = String.format("%05Xh",bas);
 		String m = String.format("%05Xh",mid);
 		String t = String.format("%05Xh",top);
-		
+		//Precalc the affected zone.
+		boolean isExternal,isHighRam,isLowRam,isMiddle;
+		isExternal = (addr > top);
+		isHighRam = (addr > mid) && (addr <= top);
+		isLowRam = (addr > bas) && (addr < mid);
+		isMiddle = addr == mid;
+		//
 		txt += "Address   threshold\n";
 		txt += GREEN + a + RESET;
 		
 		if(addr >= mid && addr <= top) {
 			txt += "  > " + YELLOW + m + "\n" + RESET;
-		}else if (addr > top) {
+		}else if (isExternal) {
 			txt += "  > " + YELLOW + t + "\n" + RESET;
-		}else if (addr == mid) {
+		}else if (isMiddle) {
 			txt += "  = " + YELLOW + m + "\n" + RESET;
 		}else {
 			txt += "  < " + YELLOW + m + "\n" + RESET;
 		}
 		
 		//TODO: Determinate if the limit (top, middle, whatever) is included when addressing. Can write at top?
-		
 		txt += "\n";
 		txt +=  "--|--|--|--|--|- \n";
-		txt += "|" + ((addr > top)? RED_BGD:RESET) + "              " + RESET + "| \n";
-
-		txt += "|" + ((addr > top)? RED_BGD:RESET) + "   EXTERNAL   " + RESET + "| \n";
-		txt += "|" + ((addr > top)? RED_BGD:RESET) + "     RAM      " + RESET + "| \n";
+		txt += "|" + ((isExternal)? RED_BGD:RESET) + "              " + RESET + "|\n";
+		txt += "|" + ((isExternal)? RED_BGD:RESET) + "   EXTERNAL   " + RESET + "|" + ((isExternal && NC)? " <= Error zone":"") + "\n";
+		txt += "|" + ((isExternal)? RED_BGD:RESET) + "     RAM      " + RESET + "|\n";
 		txt += "================ " + t  + " => Total RAM: " + getMaxRAM(top) + "\n";	
-		txt += "|" + (((addr > mid) && (addr <= top) )? RED_BGD:RESET) + "              " + RESET + "| \n";
-		txt += "|" + (((addr > mid) && (addr <= top) )? RED_BGD:RESET) + "  [HIGH RAM]  " + RESET + "| \n";
-		txt += "|" + (((addr > mid) && (addr <= top) )? RED_BGD:RESET) + "              " + RESET + "| \n";
-		txt += "-" + ((addr == mid )? RED_BGD:RESET) + "--------------- " + m + RESET + "\n";
-		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "              " + RESET + "| \n";
-		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "  [LOW RAM]   " + RESET + "| \n";
-		txt += "|" + (((addr > bas) && (addr < mid) )? RED_BGD:RESET) + "              " + RESET + "| \n";
+		txt += "|" + ((isHighRam)? RED_BGD:RESET) + "              " + RESET + "|\n";
+		txt += "|" + ((isHighRam)? RED_BGD:RESET) + "  [HIGH RAM]  " + RESET + "|" + ((isHighRam && NC)? " <= Error zone":"") + "\n";
+		txt += "|" + ((isHighRam)? RED_BGD:RESET) + "              " + RESET + "|\n";
+		txt += "-" + ((isMiddle)? RED_BGD:RESET) + "--------------- " + m + RESET + ((isMiddle && NC)? " <= Error zone":"") + "\n";
+		txt += "|" + ((isLowRam)? RED_BGD:RESET) + "              " + RESET + "|\n";
+		txt += "|" + ((isLowRam)? RED_BGD:RESET) + "  [LOW RAM]   " + RESET + "|" + ((isLowRam && NC)? " <= Error zone":"") + "\n";
+		txt += "|" + ((isLowRam)? RED_BGD:RESET) + "              " + RESET + "|\n";
 		txt += "================ " + b + "\n";
-		txt += "|              | \n";
+		txt += "|              |\n";
 		txt += "|  [ROM AREA]  |\n";
 		txt += "================ " + String.format("%05Xh%n",0);
 				
 		return txt;
 	}
 	
+	/**
+	 * This function draws the layout of the PCB centered in the RAM area.
+	 * Particularly the RAM ICs.
+	 * <P>It needs the array set of bits for each IC (16 bits) in increasing order that match the numbered ICs (from IC1 to IC16).
+	 * @param binary array with the representation of each faulty IC (bit = 1) or not (bit = 0) in increasing order.
+	 * @return The String with the layout and market faulty ICs properly (colored or symbolic)
+	 */
 	private String drawLayout(int[] binary) {
 		String txt = "";
 		String row1, row2;
@@ -370,8 +429,15 @@ public class ShellMSG {
 		return txt;
 	}
 	
-	
-	private int[] composeBin(int[] binary, int row) {
+	/**
+	 * Compose the full array for each IC on the QL (16). Also the new array is
+	 *  written in the reverse order to match the right count from IC1 to IC16.
+	 * @param binary Result binary that is written with the higher IC representation in the lowest position.
+	 * @param row it indicate if the array belongs to the first row or the second one. So for row1 (IC1 to IC8) set it to 1. For 
+	 * Set 2 for row 2 (IC9 to IC16).
+	 * @return The full binary results for all the ICs (IC1 till IC16) with matching order.
+	 */
+	private int[] composeFullBin(int[] binary, int row) {
 		int[] bin = new int[16];
 		for (int i=0; i<16; i++) {
 			bin[i] = 0;
@@ -390,8 +456,7 @@ public class ShellMSG {
 	
 	private String showLayout(int[] binary, int row) {
 		String txt = "\n";
-		int[] bin = composeBin(binary,row);
-		
+		int[] bin = composeFullBin(binary,row);
 		txt += drawLayout(bin);
 		
 		return txt;
@@ -402,9 +467,7 @@ public class ShellMSG {
 		String txt = "";
 		String line = (a == 1)? "----------":"___________"; 					//reducing the loop by composing the core to 10 units.
 		
-		for(int i = 0; i < 8 ; i++) {											// each time x 10 symbols.
-			txt += line;
-		}
+		for(int i = 0; i < 8 ; i++) txt += line;								// each time x 10 symbols.
 		
 		System.out.println(txt + "\n");
 	}
@@ -423,8 +486,8 @@ public class ShellMSG {
 			int n = (address >= MIDDLE)? 16:8;
 			//1 => BAD, 0 => GOOD
 			for(int i = 0; i < 8; i++) {
-				if(binary[i] == 1) txt += BOLD + ic + (n-i) + RED + " BAD" + RESET;
-				else txt += ic + (n-i) + GREEN + " GOOD" + RESET;
+				if(binary[i] == 1) txt += BOLD + ic + (n-i) + RED + (((n-i)<10)? "  BAD":" BAD") + RESET;
+				else txt += ic + (n-i) + GREEN + (((n-i)<10)? "  GOOD":" GOOD") + RESET;
 			}
 			//Shows Layout formated. To get the row we divide number of ICs by 8
 			txt += showLayout(binary,n/8);
@@ -432,10 +495,9 @@ public class ShellMSG {
 		
 		System.out.println(txt);
 		
-		//Special warning if the test is for a modded QL with 640KB of internal RAM.
+		//Special warning if the test is for a modified QL with 640KB of internal RAM.
 		if(TOP == 0xC0000) showWarningQL640(); 
 		
 		drawLine(2);
-		
 	}
 }
