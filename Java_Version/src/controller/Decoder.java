@@ -317,7 +317,6 @@ public class Decoder {
 	 * Function to keep internal tests of the APP without messing around with the main code.
 	 */
 	public void test() {
-		//TODO: Remove after testing
 		//Test special case all RAM is OK
 		write = new Value("548C4878");
 		read = new Value("548C4878");

@@ -586,7 +586,7 @@ public class ShellMSG {
 	 */
 	public void showFaultyICs(int address, int BASE, int MIDDLE, int TOP , int[] binary) {
 		String txt = BOLD + UNDERLINE + "\nRESULTS\n\n" + RESET;
-		//TODO add to print the address comparator with the top of Inner Ram.
+		
 		txt += showAddressGraph(address,BASE,MIDDLE,TOP);
 		txt += BOLD + "\nBinary result: " + YELLOW + binaryToStr(binary) + RESET + "\n";
 

@@ -10,51 +10,67 @@ package model;
  */
 public class Value {
 	
-	/**   */
+	/** Hexadecimal number stored by pairs of hex digits (4 pairs) */
 	private byte[] hexList;
-	/**   */
+	/** Hexadecimal number stored by pairs of decimal number equivalent (4 pairs) */
 	private int[] decList;
-	/**   */
+	/** Hexadecimal number contained */
 	private int value;
-	/**   */
+	/** Flag to indicate if the stored number is valid or not */
 	private boolean valid = false;
 	
 	
-	
+	/**
+	 * Constructor for the Value Class with a string parameter that represent an unsigned hexadecimal number.
+	 * @param value hexadecimal in String format representing an unsigned number.
+	 */
 	public Value(String value) {
 		this.hexList = new byte[4];
 		this.decList = new int[4];
 		this.valid = setValue(value);
-	}
+	}	
 	
-	
-	
+	/**
+	 * The function gives the hexadecimal number stored in a position of the array.
+	 * @param index of the array to read its value.
+	 * @return hexadecimal number into the referenced position and size of a byte. 
+	 */
 	public byte getHex(int index) {
 		return this.hexList[index];
 	}
 	
-	
-	
+	/**
+	 * The function gives the decimal number stored in a position of the array.
+	 * @param index of the position to read.
+	 * @return decimal number accessed whose size is an int.
+	 */
 	public int getDec(int index) {
 		return this.decList[index];
 	}
 	
-	
-	
+	/**
+	 * The function returns if the stored value is a valid hexadecimal number one or not.
+	 * @return True when it's valid. False otherwise.
+	 */
 	public boolean isValid() {
 		return this.valid;
 	}
 	
 	/**
-	 * Gives the stored value in Hex format.
-	 * @return
+	 * This function gives back the stored value in Hex format.
+	 * @return the hexadecimal number.
 	 */
 	public int getValue() {
 		return this.value;
 	}
-	
-	
-	
+		
+	/**
+	 * The function acquires the unsigned hexadecimal number passed into a String, check if it is a valid number,
+	 *  and then set the corresponding attributes (fields) arrays properly.
+	 *  It returns a boolean value when the number is valid and the process is done.
+	 * @param v hexadecimal unsigned number of 8 digits length (4 bytes).
+	 * @return True if the process was successful. Otherwise false.
+	 */
 	private boolean setValue(String v) {		
 		//Check no null
 		boolean done = v != null;
@@ -81,24 +97,21 @@ public class Value {
 			decList[i/2] = hexList[i/2] & 0xFF;
 		}
 		
-		//TODO: Delete this line after testing it properly
-//		this.value = Integer.parseInt(v, 16);
 		this.value = Integer.parseUnsignedInt(v, 16);
 		
 		return done;
 	}
 	
-	
-	
+	/**
+	 * This method overwrite the toString function and conforms the number in an easy visual format.
+	 *  The generated strings is returned with a Carry Return code.
+	 */
 	public String toString() {
-		//TODO: Clean commented old sentences.
 		String state ="";
-		//String decstr = "Decimal value: ";
 		StringBuilder hex = new StringBuilder();
 		
 		for(int i = 0; i < 4 ; i++) {
 			hex.append(String.format("%02X ", hexList[i] & 0xFF));
-			//decstr += decList[i] + " ";			
 		}
 		
 		state += hex.toString() + "\n";
