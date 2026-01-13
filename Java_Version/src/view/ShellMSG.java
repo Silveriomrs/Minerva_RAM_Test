@@ -10,13 +10,13 @@ import model.Value;
 
 /**
  * The class is in charge of the view component of the tool.
- * Mainly hosts the messages and functions to represent the texts properly in the console.
+ *  Mainly hosts the messages and functions to represent the texts properly by the console.
  * @author Silverio MRS. (aka Popopo,Lindyhop)
  * @version 1.0
  */
 public class ShellMSG {
 	
-    private static final String VERSION = "0.98a";
+    private static final String VERSION = "0.98b";
 
 	public static String RESET  = "\u001B[0m";
     public static String RED    = "\u001B[31m";
@@ -29,66 +29,31 @@ public class ShellMSG {
    
     private boolean NC = false;											//Flag No color activated.
 	
+    /**
+     * Constructor of the class.
+     */
 	public ShellMSG() {
 		
 	}
 	
+	/**
+	 * The function format a received value (usually hexadecimal), with the ANSI colors
+	 *  depending is valid or not. Returning the result.  
+	 * @param v Value to print, usually Hexadecimal number in String format.
+	 * @param isValid when the value must be printed in Green color for a valid one, otherwise Red color.
+	 * @return The formatted text of the value with Green or Red color and bold chars.
+	 */
 	private String showValue(String v, boolean isValid) {
 		String c = (isValid)? (GREEN + BOLD) : (RED + BOLD); 
 		String txt = c + v + RESET;
 		return txt;
 	}
 	
-	public void showErr(ErrCodes e, String value) {
-		String txt = "";
-		txt += showValue(value,false);
-		
-		switch(e) {
-		case NOT_ENOUGH_PARAMS: txt = RED + BOLD + "Not enough parameters"; break;
-		case UNKNOWN_PARAM: txt += " : Unknown paramater"; break;
-		case WRONG_WRITE_VALUE: txt += " : Wrong WRITE value"; break;
-		case WRONG_READ_VALUE: txt += " : Wrong READ value"; break;
-		case WRONG_ADDRESS_VALUE: txt += " : Wrong ADDRESS value"; break;
-		case WRONG_QLRAM_VALUE: txt += " : Wrong QLRAM value"; break;
-		default:
-			txt = RED + BOLD + "\nToo many parameters\n" + RESET + "use" + GREEN + 
-			BOLD + " -e " + RESET + "argument to get some valid examples.";
-		}
-		
-		System.out.println(txt);
-	}
 	
-	
-	public void showInputs(Value write, Value read, Value address, String typeramexp) {
-		String txt = BOLD + UNDERLINE + "\nINPUTS\n" + RESET;
-		if(NC) txt += "------\n";
-		
-		txt += "\nSystem:  " + YELLOW + typeramexp + RESET;
-		txt += "\nWrite:   " + showValue(write.toString(), write.isValid());
-		txt += "Read:    " + showValue(read.toString(), read.isValid());
-		txt += "Address: " + showValue(address.toString(), address.isValid());	
-		System.out.println(txt);
-	}
-	
-	
-	private void showOptions() {
-		String txt = YELLOW + BOLD + UNDERLINE + "\nOptions\n" + RESET;
-		if(NC) txt += "-------\n";
-		
-		txt += "java -jar ramtestdec.jar [OPTION] \n";
-		txt += BOLD + "\n-a    : " + RESET + " About this application.";
-		txt += BOLD + "\n-c    : " + RESET + " Shows the credits.";
-		txt += BOLD + "\n-e    : " + RESET + " Shows some examples.";
-		txt += BOLD + "\n-h    : " + RESET + " Shows full help.";
-		txt += BOLD + "\n-nc   : " + RESET + " Disables Ansi colors for non supported consoles. Must be the last argument.";
-		txt += BOLD + "\n-o    : " + RESET + " Shows the options.";
-		txt += BOLD + "\n-re   : " + RESET + " Run an example case.";
-		txt += BOLD + "\n-s    : " + RESET + " Shows the syntax.";
-		txt += BOLD + "\n-u    : " + RESET + " Shows the user's guide.";
-		txt += BOLD + "\n-v    : " + RESET + " Shows the version.";
-		System.out.println(txt);
-	}
-	
+	/**
+	 * It conforms the established help information calling to the
+	 * individual procedures.
+	 */
 	private void showFullHelp() {
 		showAbout();
 		showDisclamer();
@@ -100,32 +65,21 @@ public class ShellMSG {
 		showExamples();	
 	}
 	
+	/**
+	 * It shows the  minimum information about the APP to the user.
+	 * Usually when the users doesn't introduce an option as argument.
+	 */
 	private void showMinHelp() {
 		showAbout();
 		showSyntax();
 		showDisclamer();
 	}
 	
-	public void setSwitch(String v) {
-		switch(v.toLowerCase()){
-		case "-a" : showAbout(); break;
-		case "-c" : showCredits(); break;										//Credits
-		case "-e" : showExamples() ; break;										//Examples
-		case "-h" : showFullHelp() ; break;										//Full  help
-		case "-m" : showMinHelp(); break;
-		case "-nc" : disableColors(); break;									//Disable ANSI Colors.
-		case "-o" : showOptions() ; break;			
-		case "-re" : break;													    //Run the default example. No need nothing here.
-		case "-s" : showSyntax() ; break;										//Syntax
-		case "-u" : showUserGuide() ; break;										//Syntax
-		case "-v" : showVersion(); break;										//Version
-		default:
-			showErr(ErrCodes.UNKNOWN_PARAM,v);
-		}
-		
-		drawLine(2);
-	}
 	
+	/**
+	 * The procedure disable all ANSI codes used by the messages to be printed by the console.
+	 *  It replaces those codes by an empty String "".
+	 */
 	private void disableColors() {
 		NC = true;
 		RESET  = "";
@@ -138,6 +92,9 @@ public class ShellMSG {
 	    CYAN_BGD = "";
 	}
 	
+	/**
+	 * It shows the basic valid syntax for the APP with optional parameters.
+	 */
 	private void showSyntax() {
 		String txt = YELLOW + BOLD + UNDERLINE + "\nSyntax\n" + RESET;
 		if(NC) txt += "------\n";
@@ -148,11 +105,18 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	/**
+	 * It shows the APP version formated by ANSI codes.
+	 */
 	private void showVersion() {
 		String txt = BOLD + YELLOW + "\nVersion: " + GREEN + VERSION + RESET;		
 		System.out.println(txt);
 	}
 	
+	/**
+	 * The procedure shows the information about what this APP is for, also contact information
+	 *  to report bugs or suggestions. The message is ANSI formated.
+	 */
 	private void showAbout() {
 		String txt = YELLOW + BOLD + UNDERLINE + "\nAbout\n" + RESET;
 		if(NC) txt += "-----\n";
@@ -164,6 +128,9 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	/**
+	 * This shows the credits of the original program to the user with formatting ANSI Codes.
+	 */
 	private void showCredits() {
 		String txt = BOLD + YELLOW + UNDERLINE + "\nCredits\n" + RESET;
 		if(NC) txt += "-------\n";
@@ -175,6 +142,10 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	/**
+	 * It gives a warning about the QL640 option. It should be shown every time this option
+	 *  is used.
+	 */
 	private void showWarningQL640() {
 		//Special Warning about QL640 option-
 		String txt = "";
@@ -185,6 +156,9 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	/**
+	 * It shows a colored by ANSI codes disclaimer message for the user.
+	 */
 	private void showDisclamer() {
 		String txt = BOLD + YELLOW + UNDERLINE + "\nDisclamer\n" + RESET;
 		if(NC) txt += "---------\n"; //
@@ -196,6 +170,10 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	/**
+	 * It shows the user guide of the APP for the user.
+	 *  The procedure support ANSI codes.
+	 */
 	private void showUserGuide() {
 		String txt = BOLD + YELLOW + UNDERLINE + "\nUser Guide\n" + RESET;
 		if(NC) txt += "----------\n";
@@ -221,6 +199,10 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	/**
+	 * It shows some examples to use the APP.
+	 *  The text is formatted by ANSI codes.
+	 */
 	private void showExamples() {
 		String txt = BOLD + YELLOW + UNDERLINE + "\nExamples\n" + RESET;
 		if(NC) txt += "--------\n";
@@ -246,36 +228,14 @@ public class ShellMSG {
 		System.out.println(txt);
 	}
 	
+	
 	private String binaryToStr(int[] binary) {
 		String b = "";
 		for(int a : binary) { b += a; }
 		return b;
 	}
 	
-	public void showNoFaultyRAM(int addr, int bas, int mid, int top) {
-		String txt = BOLD + UNDERLINE + "\nRESULTS\n\n" + RESET;
-		//Change remark to yellow color to remark related issue but not faulty RAM IC
-		RED_BGD = CYAN_BGD;
-		txt += showAddressGraph(addr,bas,mid,top);
-		//Explanation.
-		txt += BOLD + YELLOW + UNDERLINE + "\nRARE CASE\n" + RESET;
-		txt += "\nInitially " + UNDERLINE + GREEN + "there is no faulty RAM" + RESET + ". Written data match read, but somehow"
-				+ "\nthe routine was fired by a non controlled event with an erratic Address.";
-		//
-		txt += "\n\nIt doesn't mean that all RAM is 100% right yet, but the test (Minerva, external test,"
-				+ "\netc) cannot assert there is a faulty one. Actually, this kind of situation means that a"
-				+ "\nline/s controlled by an IC (CPU, ULA, external card, CPLD, etc) is being altered"
-				+ "\nfiring the test with a fake RAM error.";
-		//
-		txt += YELLOW + "\n\nIf the error in your QL (3 codes) appears repetidly, it's recommended to " + UNDERLINE + "remove any"
-				+ "\nexternal or expansion card" + RESET + YELLOW + " and observe if it continues happening.";
-		
-		txt += "\n\n" + BOLD + "Not only" + RESET + YELLOW + " but the suspects in priority order are:"
-				+ "\nExternal card, a loose cable, CPU, ZX8301, ZX8302. In Iss6/7 boards also IC38 (HAL)" + RESET;
-		System.out.println(txt);
-		drawLine(2);
 
-	}
 	
 	/**
 	 * Gives the present amount of RAM in the PCB based on the TOP address given.
@@ -453,7 +413,14 @@ public class ShellMSG {
 		return bin;
 	}
 	
-	
+	/**
+	 * The function shows a representation of the PCB Layout focused on the RAM area,
+	 *  showing from the IC1 to IC16. The ICs are tainted with colors depending on if they are 
+	 *   considered faulty or not.
+	 * @param binary Binary array with the results from the calc of decoding the introduced values as arguments.
+	 * @param row Row of the RAM that the results are referred. It may be Row 1 for ICs1-8 or Row 2 for ICs9-16.
+	 * @return The drawn layout with the colored and formatted ICs marking the wrong ICs.
+	 */
 	private String showLayout(int[] binary, int row) {
 		String txt = "\n";
 		int[] bin = composeFullBin(binary,row);
@@ -462,6 +429,11 @@ public class ShellMSG {
 		return txt;
 	}
 	
+	/**
+	 * The procedure draws a line of 80 chars (for console width separator).
+	 *  There are 2 types of lines, underscore and minus symbol for choice.
+	 *  @param 1 for lines composed by minus '-', 2 for underscore component '_'.
+	 */
 	private void drawLine(int a) {
 		//Later it may adjust itself to console wide dimension.
 		String txt = "";
@@ -472,6 +444,146 @@ public class ShellMSG {
 		System.out.println(txt + "\n");
 	}
 	
+	/**
+	 * This procedure prints an error code message based on the received parameter.
+	 * 	It's conformed to the input values for arguments introduced by the user from the console.
+	 * @param e Error code from the class {@link model.ErrCodes}.
+	 * @param value the referenced value that produce the error message.
+	 */
+	public void showErr(ErrCodes e, String value) {
+		String txt = "";
+		txt += showValue(value,false);
+		
+		switch(e) {
+		case NOT_ENOUGH_PARAMS: txt = RED + BOLD + "Not enough parameters"; break;
+		case UNKNOWN_PARAM: txt += " : Unknown paramater"; break;
+		case WRONG_WRITE_VALUE: txt += " : Wrong WRITE value"; break;
+		case WRONG_READ_VALUE: txt += " : Wrong READ value"; break;
+		case WRONG_ADDRESS_VALUE: txt += " : Wrong ADDRESS value"; break;
+		case WRONG_QLRAM_VALUE: txt += " : Wrong QLRAM value"; break;
+		default:
+			txt = RED + BOLD + "\nToo many parameters\n" + RESET + "use" + GREEN + 
+			BOLD + " -e " + RESET + "argument to get some valid examples.";
+		}
+		
+		System.out.println(txt);
+	}
+	
+	/* PUBLIC FUNTIONS/PROCEDURES */
+	
+	/**
+	 * The procedure conforms a message with the introduced values to decode from the user,
+	 *  {WRITE,READ,ADDRESS,TYPERAMEXP}. This colored message is used for the final report after
+	 *   decoding the values.
+	 *   Those values are introduced by the user with the APP arguments.
+	 * @param write written value that the test returns.
+	 * @param read read value returned by the test.
+	 * @param address address where the discordance was found, returned by the test.
+	 * @param typeramexp Type of internal amount of RAM.
+	 */
+	public void showInputs(Value write, Value read, Value address, String typeramexp) {
+		String txt = BOLD + UNDERLINE + "\nINPUTS\n" + RESET;
+		if(NC) txt += "------\n";
+		
+		txt += "\nSystem:  " + YELLOW + typeramexp + RESET;
+		txt += "\nWrite:   " + showValue(write.toString(), write.isValid());
+		txt += "Read:    " + showValue(read.toString(), read.isValid());
+		txt += "Address: " + showValue(address.toString(), address.isValid());	
+		System.out.println(txt);
+	}
+	
+	/**
+	 * The procedure shows the options that contain the APP to the user.
+	 */
+	private void showOptions() {
+		String txt = YELLOW + BOLD + UNDERLINE + "\nOptions\n" + RESET;
+		if(NC) txt += "-------\n";
+		
+		txt += "java -jar ramtestdec.jar [OPTION] \n";
+		txt += BOLD + "\n-a    : " + RESET + " About this application.";
+		txt += BOLD + "\n-c    : " + RESET + " Shows the credits.";
+		txt += BOLD + "\n-e    : " + RESET + " Shows some examples.";
+		txt += BOLD + "\n-h    : " + RESET + " Shows full help.";
+		txt += BOLD + "\n-nc   : " + RESET + " Disables Ansi colors for non supported consoles. Must be the last argument.";
+		txt += BOLD + "\n-o    : " + RESET + " Shows the options.";
+		txt += BOLD + "\n-re   : " + RESET + " Run an example case.";
+		txt += BOLD + "\n-s    : " + RESET + " Shows the syntax.";
+		txt += BOLD + "\n-u    : " + RESET + " Shows the user's guide.";
+		txt += BOLD + "\n-v    : " + RESET + " Shows the version.";
+		System.out.println(txt);
+	}
+	
+	/**
+	 * This function shows the information and/or set some flags determined by the
+	 *  received switch 'v'. In case that the value doesn't match a right value, it
+	 *   will show a error message.
+	 * @param v Value conformed as string '-x' where 'x' is one of the contained values.
+	 */
+	public void setSwitch(String v) {
+		switch(v.toLowerCase()){
+		case "-a" : showAbout(); break;
+		case "-c" : showCredits(); break;										//Credits
+		case "-e" : showExamples() ; break;										//Examples
+		case "-h" : showFullHelp() ; break;										//Full  help
+		case "-m" : showMinHelp(); break;
+		case "-nc" : disableColors(); break;									//Disable ANSI Colors.
+		case "-o" : showOptions() ; break;			
+		case "-re" : break;													    //Run the default example. No need nothing here.
+		case "-s" : showSyntax() ; break;										//Syntax
+		case "-u" : showUserGuide() ; break;										//Syntax
+		case "-v" : showVersion(); break;										//Version
+		default:
+			showErr(ErrCodes.UNKNOWN_PARAM,v);
+		}
+		
+		drawLine(2);
+	}
+	
+	/**
+	 * It creates a message when there is not a faulty RAM, formatting the introduced values,
+	 *  explaining why it may happen and how should use that information.
+	 *  The message use ANSI codes to format the message and receives the memory values calculated by the
+	 *   APP where supposedly the issue was localized.
+	 * @param addr Memory address of the issue (value introduced by the user).
+	 * @param bas Memory address where the RAM begins (after ROM zone).
+	 * @param mid Memory address in the middle point of the whole inner RAM.
+	 * @param top Last memory address of the ram (higher position).
+	 */
+	public void showNoFaultyRAM(int addr, int bas, int mid, int top) {
+		String txt = BOLD + UNDERLINE + "\nRESULTS\n\n" + RESET;
+		//Change remark to yellow color to remark related issue but not faulty RAM IC
+		RED_BGD = CYAN_BGD;
+		txt += showAddressGraph(addr,bas,mid,top);
+		//Explanation.
+		txt += BOLD + YELLOW + UNDERLINE + "\nRARE CASE\n" + RESET;
+		txt += "\nInitially " + UNDERLINE + GREEN + "there is no faulty RAM" + RESET + ". Written data match read, but somehow"
+				+ "\nthe routine was fired by a non controlled event with an erratic Address.";
+		//
+		txt += "\n\nIt doesn't mean that all RAM is 100% right yet, but the test (Minerva, external test,"
+				+ "\netc) cannot assert there is a faulty one. Actually, this kind of situation means that a"
+				+ "\nline/s controlled by an IC (CPU, ULA, external card, CPLD, etc) is being altered"
+				+ "\nfiring the test with a fake RAM error.";
+		//
+		txt += YELLOW + "\n\nIf the error in your QL (3 codes) appears repetidly, it's recommended to " + UNDERLINE + "remove any"
+				+ "\nexternal or expansion card" + RESET + YELLOW + " and observe if it continues happening.";
+		
+		txt += "\n\n" + BOLD + "Not only" + RESET + YELLOW + " but the suspects in priority order are:"
+				+ "\nExternal card, a loose cable, CPU, ZX8301, ZX8302. In Iss6/7 boards also IC38 (HAL)" + RESET;
+		System.out.println(txt);
+		drawLine(2);
+
+	}
+	
+	
+	/**
+	 * This is main procedure. It is in charge of showing the faulty ICs graphically for the console,
+	 *  the memory region affected, also the binary code properly.
+	 * @param address Address of the issue.
+	 * @param BASE Base of the RAM memory in hexadecimal (where the RAM starts)
+	 * @param MIDDLE Address of the half of the RAM memory point.
+	 * @param TOP Final RAM address.
+	 * @param binary Binary results of decoding that identify faulty ICs.
+	 */
 	public void showFaultyICs(int address, int BASE, int MIDDLE, int TOP , int[] binary) {
 		String txt = BOLD + UNDERLINE + "\nRESULTS\n\n" + RESET;
 		//TODO add to print the address comparator with the top of Inner Ram.

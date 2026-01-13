@@ -1,5 +1,8 @@
 /**
- * 
+ * Controller part of the application in charge of decoding the 3 values from Faulty Ram Tester.
+ * This Class implement the algorithm written by Dominic Brown (1990) for the Sinclair QL.
+ * @author Silverio MRS. (aka Popopo,Lindyhop).
+ * @version 1.0
  */
 package controller;
 
@@ -11,33 +14,41 @@ import view.ShellMSG;
 /**
  * This engine is configured to works with INTs whose size is at least 32bits.
  */
-public class Tester {
+public class Decoder {
 	
+	/** Instance of the view part for console. */
 	private ShellMSG shell = new ShellMSG();
-	
-	final static int BASE = 0x20000;							//Starting point for RAM after ROM area.
+	/** Starting point for RAM after ROM area. */
+	final static int BASE = 0x20000;
+	/** Last Address of the inner RAM zone */
 	private static int TOP;
-
+	/** Middle point of the inner RAM area address */
 	private static int MIDDLE;
+	/** Hexadecimal code from test to decode Write data, Read data and Address of the issue */
 	private Value write,read,address;
+	/** Amount of inner RAM installed on the PC {128,512,640} KB */
 	private TypeRamExpansion typeramexp;
+	/** Binary array with marking the faulty and right ICs */
 	private int[] binary = new int[8];
+	/** Flag to indicate if all ICs are right or not */
 	private boolean allICfine = true;							// Flag to mark case when all ICs are OK.
 	
-	
-	public Tester() {
+	/**
+	 * Constructor to set an example for this instance.
+	 */
+	public Decoder() {
 		//setting default values (example)
 		setExample();
 	}
 	
 	/**
-	 * This constructor get the main datas by its interface.
+	 * This constructor get the main data by its interface. Mainly it gets the arguments passed by parameters.
 	 * @param w Write code.
 	 * @param r Read code.
 	 * @param a involved address.
 	 * @param t TypeRamExpansion defined in one of the option (128,512,640)
 	 */
-	public Tester(String w, String r, String a, String t) {
+	public Decoder(String w, String r, String a, String t) {
 		setWrite(w);
 		setRead(r);
 		setAddress(a);
@@ -45,6 +56,9 @@ public class Tester {
 		calc();
 	}
 	
+	/**
+	 * The method is used to show results by the defined output.
+	 */
 	public void showResults() {
 		shell.showInputs(write, read, address, "" + this.typeramexp);
 		
@@ -56,10 +70,19 @@ public class Tester {
 		
 	}
 	
+	/**
+	 * It gives the binary array calculated.
+	 * @return the binary resulted from the calc where 1 identify a faulty IC and 0 a IC not wrong.
+	 */
 	public int[] getBinArray() {
 		return this.binary;
 	}
 	
+	/**
+	 * It checks if the Hexadecimal value is a valid one or not.
+	 * @param h String that contains an hexadecimal number.
+	 * @return True if the value is valid. False otherwise.
+	 */
 	private boolean isValidHEX(String h) {
 		//Create a Value object to accomplish requirements.
 		Value v = new Value(h);
@@ -67,6 +90,11 @@ public class Tester {
 		return v.isValid();
 	}
 	
+	/**
+	 * Set the Write value code introduced into a String. If it fails shows a error message.
+	 * @param v String that represent the hexadecimal code to set.
+	 * @return True if the operation was done right, false otherwise.
+	 */
 	public boolean setWrite(String v) {
 		boolean OK = isValidHEX(v);
 		if(OK) {
@@ -78,6 +106,11 @@ public class Tester {
 		return OK;
 	}
 	
+	/**
+	 * Set the Read value code introduced into a String. If it fails shows a error message.
+	 * @param v String that represent the hexadecimal code to set.
+	 * @return True if the operation was done right, false otherwise.
+	 */
 	public boolean setRead(String v) {
 		boolean OK = isValidHEX(v);
 		if(OK) {
@@ -89,6 +122,11 @@ public class Tester {
 		return OK;
 	}
 	
+	/**
+	 * Set the Address value code introduced into a String. If it fails shows a error message.
+	 * @param v String that represent the hexadecimal code to set.
+	 * @return True if the operation was done right, false otherwise.
+	 */
 	public boolean setAddress(String v) {
 		boolean OK = isValidHEX(v);
 		
@@ -102,6 +140,12 @@ public class Tester {
 		return OK;
 	}
 	
+	/**
+	 * Set the optional QL type RAM value code introduced into a String. If it fails shows a error message.
+	 * This parameter is optional and when omitted the APP takes 128K as default value.
+	 * @param v String that represent the hexadecimal code to set.
+	 * @return True if the operation was done right, false otherwise.
+	 */
 	public boolean setTypeRAM(String v) {
 		boolean OK = TypeRamExpansion.contains(v);
 	    
@@ -114,14 +158,24 @@ public class Tester {
 		return OK;
 	}
 	
+	/**
+	 * The method initiate the calculation of the binary result and it set it on the 
+	 *  corresponded field. Also it initiate the other internal attributes related with the RAM.
+	 */
 	public void calc() {
 		//after setting example environment, set Top RAM according to it.
 		setTop();
 		//set the middle point.
-		Tester.MIDDLE = getMiddle();
+		Decoder.MIDDLE = getMiddle();
 		calcBIN();
 	}
 	
+	/**
+	 * The main function to calculate the binary array of 8 positions with the results of faulty ICs.
+	 *  Each position of the array correspond with an IC, when the value on that cell with a value of 0 or 1.
+	 *   When the value is 0 the IC is right, when it is 1 the corresponded IC is faulty.
+	 * @return The calculated binary array of 8 positions. Position with '1' means a faulty IC, '0' not faulty IC.
+	 */
 	private int calcBIN() {
 		//Restart AllICfine to true.
 		allICfine = true;
@@ -147,6 +201,10 @@ public class Tester {
 		return orv;
 	}
 	
+	/**
+	 * Method to set and calculate an demo example up with Write, Read and Address values to decode. Also set the optional value
+	 *  of amount inner RAM to 128KB.
+	 */
 	private void setExample() {
 		this.write = new Value("548C4878");
 		this.read = new Value("5CCD5CCD");
@@ -155,10 +213,17 @@ public class Tester {
 		calc();
 	}
 	
+	/**
+	 * The function returns the type of inner RAM defined in the studied QL.
+	 * @return
+	 */
 	private TypeRamExpansion getTypeRAM() {
 		return typeramexp;
 	}
 	
+	/**
+	 * The method sets the Top address of RAM present in the QL based on the defined amount of RAM.
+	 */
 	private void setTop() {
 		switch(typeramexp) {
 		case QL128: TOP = 0x40000; break;
@@ -169,14 +234,34 @@ public class Tester {
 		}
 	}
 	
+	/**
+	 * The method returns the address middle point of the whole internal amount of RAM.
+	 * @return Hexadecimal address of the internal amount of RAM.
+	 */
 	private int getMiddle() {
 		return (TOP - BASE)/2 + BASE;
 	}
 	
+	/**
+	 * The method calculate if the issued address is outside of the internal installed amount of RAM.
+	 * @return True if the issue is located into the inner RAM, false otherwise (expansion ram).
+	 */
 	private boolean isInnerRAM() {
 		return this.address.getValue() > TOP;
 	}
 	
+	/**
+	 * Main function for console version. It process the arguments introduced from the console by the user and returns the results of the processing.
+	 * 	The arguments are optional and can be combined. The arguments are described in the view class.
+	 * @see view.Shell.MSG
+	 * @param args [OPTION] [WRITE,READ,ADDRESS] [QLTYPEMOD] [-NC]
+	 * @param [OPTION] optional switch that will show information about related with the APP.
+	 * @param [WRITE,READ,ADDRESS] codes given by the RAM test (usually given by Minerva ROM) in hexadecimal of 8 numbers.
+	 * @param [QLTYPEMOD] it defines the installed inner RAM on the QL placed on ICs layout they may be 128KB, 512KB or 640KB,
+	 *  the default value when omitted is 128KB written as QL128, QL512 and QL640 respectively.
+	 * @param [-NC] No color parameter, it shows all the information without ANSI colors codes.
+	 * @return True if the process didn't face problem. Otherwise false.
+	 */
 	public boolean processArgs(String[] args) {
 		int a = args.length;
 		boolean color = true;
@@ -252,7 +337,7 @@ public class Tester {
 	 */
 	public static void main(String[] args) {
 		//Create a object with default values example.
-		Tester tester = new Tester();
+		Decoder tester = new Decoder();
 		boolean ok = tester.processArgs(args);
 		
 		//For testing purpose. Comment/de-comment.

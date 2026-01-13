@@ -1,17 +1,25 @@
 /**
- * 
+ * Model part of the application in charge of store the values from Faulty Ram Tester.
+ * @author Silverio MRS. (aka Popopo,Lindyhop).
+ * @version 1.0
  */
 package model;
 
 /**
- * 
+ * This class store one hexadecimal value and gives it in different formats as needs.
  */
 public class Value {
 	
+	/**   */
 	private byte[] hexList;
+	/**   */
 	private int[] decList;
+	/**   */
 	private int value;
+	/**   */
 	private boolean valid = false;
+	
+	
 	
 	public Value(String value) {
 		this.hexList = new byte[4];
@@ -19,13 +27,19 @@ public class Value {
 		this.valid = setValue(value);
 	}
 	
+	
+	
 	public byte getHex(int index) {
 		return this.hexList[index];
 	}
 	
+	
+	
 	public int getDec(int index) {
 		return this.decList[index];
 	}
+	
+	
 	
 	public boolean isValid() {
 		return this.valid;
@@ -38,6 +52,8 @@ public class Value {
 	public int getValue() {
 		return this.value;
 	}
+	
+	
 	
 	private boolean setValue(String v) {		
 		//Check no null
@@ -71,6 +87,8 @@ public class Value {
 		
 		return done;
 	}
+	
+	
 	
 	public String toString() {
 		//TODO: Clean commented old sentences.
